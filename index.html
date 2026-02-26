@@ -29,9 +29,44 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Amiri:wght@400;700&display=swap"
         rel="stylesheet">
 
-    <!-- Tracking: GA4 + Meta Pixel (dari /tracking.js — config via backend .env) -->
-    <!-- Set GA_MEASUREMENT_ID dan META_PIXEL_ID di backend/.env -->
-    <script src="/tracking.js" async></script>
+    <!-- Tracking: GA4 + Meta Pixel (Hardcoded) -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9H7NQL7GT"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-V9H7NQL7GT');
+        window._GA_ID = 'G-V9H7NQL7GT';
+    </script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+        !function (f, b, e, v, n, t, s) {
+            if (f.fbq) return; n = f.fbq = function () {
+                n.callMethod ?
+                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+            n.queue = []; t = b.createElement(e); t.async = !0;
+            t.src = v; s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1429388288091108');
+        fbq('track', 'PageView');
+        window._PIXEL_ID = '1429388288091108';
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=1429388288091108&ev=PageView&noscript=1" /></noscript>
+
+    <!-- Custom Tracking Function -->
+    <script>
+        window.trackDonasi = function (j) {
+            if (typeof fbq !== 'undefined') fbq('track', 'Lead', { value: j, currency: 'IDR' });
+            if (typeof gtag !== 'undefined') gtag('event', 'donation_submitted', { value: j, currency: 'IDR' });
+        };
+    </script>
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
@@ -765,7 +800,7 @@
                 if (q.length < 3) { dd.style.display = 'none'; return; }
                 timer = setTimeout(async () => {
                     try {
-                        const r = await fetch('/api/wilayah/search?q=' + encodeURIComponent(q));
+                        const r = await fetch(API_BASE + '/api/wilayah/search?q=' + encodeURIComponent(q));
                         const j = await r.json();
                         if (!j.data || !j.data.length) {
                             dd.innerHTML = '<div style="padding:0.75rem 1rem;color:#94a3b8;font-size:0.82rem">Tidak ditemukan, coba kata lain</div>';
@@ -788,7 +823,7 @@
 
         // ── Recent Donatur ──
         window.addEventListener('DOMContentLoaded', () => {
-            fetch('/api/stats/recent').then(r => r.json()).then(data => {
+            fetch(API_BASE + '/api/stats/recent').then(r => r.json()).then(data => {
                 const list = document.getElementById('recent-donors-list');
                 if (data && data.success && data.recent.length > 0) {
                     list.innerHTML = data.recent.map(d => {
