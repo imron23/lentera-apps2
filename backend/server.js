@@ -213,7 +213,13 @@ app.get('/api/admin/data', requireAdmin, async (req, res) => {
                     (SELECT COUNT(*)::int FROM leads WHERE status='baru' OR status IS NULL) AS total_baru,
                     (SELECT COUNT(*)::int FROM leads WHERE status='dihubungi') AS total_dihubungi,
                     (SELECT COUNT(*)::int FROM leads WHERE status='terkonfirmasi') AS total_terkonfirmasi,
-                    (SELECT COUNT(*)::int FROM leads WHERE status='selesai') AS total_selesai`
+                    (SELECT COUNT(*)::int FROM leads WHERE status='selesai') AS total_selesai,
+                    (SELECT COALESCE(SUM(d.jumlah),0)::bigint FROM donations d
+                        JOIN leads l ON d.no_wa = l.no_wa
+                        WHERE l.status IN ('selesai','terkonfirmasi')) AS revenue,
+                    (SELECT COALESCE(SUM(d.jumlah),0)::bigint FROM donations d
+                        JOIN leads l ON d.no_wa = l.no_wa
+                        WHERE l.status IN ('baru','dihubungi') OR l.status IS NULL) AS potensi_revenue`
         );
         res.json({ success: true, leads: leads.rows, donations: donations.rows, stats: stats.rows[0] });
     } catch (err) {

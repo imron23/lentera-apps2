@@ -1303,6 +1303,20 @@
                                 <p class="sbox-lbl">Rata-rata Donasi</p>
                             </div>
                         </div>
+                        <div class="stats-row" style="margin-top: 0.75rem">
+                            <div class="sbox" style="border-left: 3px solid #22c55e">
+                                <div class="sbox-top"><span class="sbox-ico">💵</span><span class="sbox-badge"
+                                        style="background:#22c55e22;color:#22c55e">confirmed</span></div>
+                                <p class="sbox-val" id="s-revenue">—</p>
+                                <p class="sbox-lbl">Revenue (Terkonfirmasi)</p>
+                            </div>
+                            <div class="sbox" style="border-left: 3px solid #f59e0b">
+                                <div class="sbox-top"><span class="sbox-ico">📈</span><span
+                                        class="sbox-badge warn">potential</span></div>
+                                <p class="sbox-val" id="s-potensi">—</p>
+                                <p class="sbox-lbl">Potensi Revenue</p>
+                            </div>
+                        </div>
                         <div class="crm-row">
                             <div class="crm-box" onclick="switchTab('leads'); filterStatus('')" data-st="">
                                 <div class="crm-dot d1">👥</div>
@@ -1638,6 +1652,10 @@
             document.getElementById('s-don').textContent = (stats.total_donatur || 0).toLocaleString('id-ID');
             document.getElementById('s-rp').textContent = 'Rp' + (parseInt(stats.total_terkumpul) || 0).toLocaleString('id-ID');
             document.getElementById('s-msh').textContent = (stats.total_mushaf || 0).toLocaleString('id-ID');
+            const avg = stats.total_donatur > 0 ? Math.round((parseInt(stats.total_terkumpul) || 0) / stats.total_donatur) : 0;
+            document.getElementById('s-avg').textContent = 'Rp' + avg.toLocaleString('id-ID');
+            document.getElementById('s-revenue').textContent = 'Rp' + (parseInt(stats.revenue) || 0).toLocaleString('id-ID');
+            document.getElementById('s-potensi').textContent = 'Rp' + (parseInt(stats.potensi_revenue) || 0).toLocaleString('id-ID');
         }
 
         function filterStatus(st) {
