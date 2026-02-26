@@ -173,13 +173,17 @@ app.get('/api/stats/recent', async (req, res) => {
 // ── Admin: Init DB (Temporary migration route) ────────────────────
 app.get('/api/admin/init-db', requireAdmin, async (req, res) => {
     try {
-        const fetch = require('node-fetch'); // or use native fetch in node 20
+        const https = require('https');
         const url = 'https://raw.githubusercontent.com/imron23/lentera-apps2/main/database/init.sql';
-        const response = await (globalThis.fetch || fetch)(url);
-        if (!response.ok) throw new Error('Failed to fetch init.sql from Github');
-        const sqlScript = await response.text();
+        const sqlScript = await new Promise((resolve, reject) => {
+            https.get(url, (resp) => {
+                let data = '';
+                resp.on('data', chunk => data += chunk);
+                resp.on('end', () => resolve(data));
+            }).on('error', reject);
+        });
         await db.query(sqlScript);
-        res.json({ success: true, message: 'Database initialized with init.sql downloaded from GitHub!' });
+        res.json({ success: true, message: 'Database initialized successfully!' });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
