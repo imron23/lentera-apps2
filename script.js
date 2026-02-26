@@ -12,7 +12,7 @@ const HARGA_PER_MUSHAF = 80000;
 // In file:// dev mode, use localhost:3000
 const API_BASE = window.location.protocol === 'file:'
     ? 'http://localhost:3000'
-    : '';
+    : (location.hostname === 'localhost' || location.hostname === '127.0.0.1' ? '' : 'https://lentera-apps2-backend.5wjs9m.easypanel.host');
 
 // ── State ────────────────────────────────────────────────────────
 let selectedQty = 0;
