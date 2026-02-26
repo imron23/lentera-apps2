@@ -170,6 +170,21 @@ app.get('/api/stats/recent', async (req, res) => {
     }
 });
 
+// ── Admin: Init DB (Temporary migration route) ────────────────────
+app.get('/api/admin/init-db', requireAdmin, async (req, res) => {
+    try {
+        const fetch = require('node-fetch'); // or use native fetch in node 20
+        const url = 'https://raw.githubusercontent.com/imron23/lentera-apps2/main/database/init.sql';
+        const response = await (globalThis.fetch || fetch)(url);
+        if (!response.ok) throw new Error('Failed to fetch init.sql from Github');
+        const sqlScript = await response.text();
+        await db.query(sqlScript);
+        res.json({ success: true, message: 'Database initialized with init.sql downloaded from GitHub!' });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 // ── Admin: List All Data ────────────────────────────────────────
 app.get('/api/admin/data', requireAdmin, async (req, res) => {
     try {
