@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wakaf Spesial Malam 10 Terakhir Ramadhan — Lentera Dakwah Indonesia</title>
+    <meta name="description"
+        content="Raih pahala berlipat di 10 malam terakhir Ramadhan! Wakaf Al-Qur'an untuk pesantren pelosok Indonesia. 1 Mushaf = Rp 80.000.">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Wakaf Spesial 10 Malam Terakhir — Lentera Dakwah Indonesia">
+    <meta property="og:description"
+        content="Malam Lailatul Qadr lebih baik dari 1000 bulan. Jadikan wakaf Al-Qur'an di 10 malam terakhir ini. 1 Mushaf Rp 80.000.">
+    <meta property="og:image" content="https://ldi.or.id/aset%20foto/wa1.jpeg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Amiri:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="/tracking.js" async></script>
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #f1f5f9;
+            background: #050510;
+            overflow-x: hidden
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        /* ── Starfield BG ── */
+        .stars {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background: radial-gradient(ellipse at 50% 0%, #0a0a2a 0%, #050510 70%)
+        }
+
+        .stars::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Ccircle cx='40' cy='30' r='1' fill='%23fff' opacity='.4'/%3E%3Ccircle cx='120' cy='80' r='.8' fill='%23fde68a' opacity='.6'/%3E%3Ccircle cx='200' cy='50' r='1.2' fill='%23fff' opacity='.3'/%3E%3Ccircle cx='300' cy='120' r='.6' fill='%23c4b5fd' opacity='.5'/%3E%3Ccircle cx='350' cy='20' r='1' fill='%23fff' opacity='.25'/%3E%3Ccircle cx='80' cy='180' r='.7' fill='%23fde68a' opacity='.4'/%3E%3Ccircle cx='260' cy='200' r='1' fill='%23fff' opacity='.35'/%3E%3Ccircle cx='160' cy='250' r='.5' fill='%23c4b5fd' opacity='.4'/%3E%3Ccircle cx='320' cy='280' r='1.1' fill='%23fff' opacity='.3'/%3E%3Ccircle cx='50' cy='310' r='.9' fill='%23fde68a' opacity='.5'/%3E%3Ccircle cx='380' cy='350' r='.6' fill='%23fff' opacity='.4'/%3E%3Ccircle cx='220' cy='380' r='1' fill='%23c4b5fd' opacity='.3'/%3E%3C/svg%3E")
+        }
+
+        .page {
+            position: relative;
+            z-index: 1
+        }
+
+        /* ── Top Bar ── */
+        .topbar {
+            background: linear-gradient(90deg, #7209b7, #b5179e);
+            padding: .5rem 0;
+            font-size: .78rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: .02em
+        }
+
+        .topbar .glow {
+            color: #fde68a;
+            animation: glow 2s ease-in-out infinite alternate
+        }
+
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 4px rgba(253, 230, 138, .3)
+            }
+
+            100% {
+                text-shadow: 0 0 16px rgba(253, 230, 138, .7)
+            }
+        }
+
+        /* ── Nav ── */
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: .75rem 1.5rem;
+            max-width: 72rem;
+            margin: 0 auto
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            font-weight: 900;
+            font-size: .9rem
+        }
+
+        .nav-brand img {
+            width: 2rem;
+            height: 2rem;
+            border-radius: .5rem
+        }
+
+        .nav-cta {
+            background: rgba(255, 255, 255, .1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 9999px;
+            padding: .45rem 1.2rem;
+            font-size: .78rem;
+            font-weight: 800;
+            transition: all .2s;
+            cursor: pointer
+        }
+
+        .nav-cta:hover {
+            background: rgba(255, 255, 255, .2)
+        }
+
+        /* ── Hero ── */
+        .hero {
+            max-width: 72rem;
+            margin: 0 auto;
+            padding: 3rem 1.5rem 2rem;
+            text-align: center
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            background: rgba(253, 230, 138, .12);
+            border: 1px solid rgba(253, 230, 138, .2);
+            border-radius: 9999px;
+            padding: .3rem 1rem;
+            font-size: .72rem;
+            font-weight: 700;
+            color: #fde68a;
+            margin-bottom: 1.5rem
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1rem
+        }
+
+        .hero h1 .accent {
+            background: linear-gradient(135deg, #fde68a, #f59e0b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent
+        }
+
+        .hero .sub {
+            font-size: 1.05rem;
+            color: #94a3b8;
+            max-width: 38rem;
+            margin: 0 auto 2rem;
+            line-height: 1.6
+        }
+
+        .hero-verse {
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+            color: #fde68a;
+            direction: rtl;
+            margin-bottom: .5rem;
+            line-height: 1.8
+        }
+
+        .hero-trans {
+            font-size: .82rem;
+            color: #94a3b8;
+            font-style: italic;
+            max-width: 32rem;
+            margin: 0 auto 2rem
+        }
+
+        /* ── Countdown ── */
+        .countdown-wrap {
+            display: flex;
+            justify-content: center;
+            gap: .625rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap
+        }
+
+        .cd-box {
+            background: linear-gradient(145deg, rgba(114, 9, 183, .15), rgba(181, 23, 158, .08));
+            border: 1px solid rgba(114, 9, 183, .2);
+            border-radius: 1rem;
+            padding: .75rem 1rem;
+            min-width: 5rem;
+            text-align: center
+        }
+
+        .cd-num {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #f0abfc;
+            line-height: 1
+        }
+
+        .cd-lbl {
+            font-size: .6rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-top: .2rem
+        }
+
+        /* ── Why 10 Malam ── */
+        .why-section {
+            max-width: 60rem;
+            margin: 0 auto;
+            padding: 2rem 1.5rem
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+            gap: .75rem
+        }
+
+        .why-card {
+            background: linear-gradient(145deg, rgba(14, 14, 26, .8), rgba(18, 18, 31, .6));
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, .05);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            transition: all .25s
+        }
+
+        .why-card:hover {
+            border-color: rgba(253, 230, 138, .2);
+            transform: translateY(-3px)
+        }
+
+        .why-ico {
+            font-size: 1.5rem;
+            margin-bottom: .5rem
+        }
+
+        .why-title {
+            font-weight: 800;
+            font-size: .88rem;
+            margin-bottom: .25rem
+        }
+
+        .why-desc {
+            font-size: .75rem;
+            color: #64748b;
+            line-height: 1.5
+        }
+
+        /* ── Paket ── */
+        .paket-section {
+            max-width: 60rem;
+            margin: 0 auto;
+            padding: 2rem 1.5rem
+        }
+
+        .paket-title {
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: .25rem
+        }
+
+        .paket-sub {
+            text-align: center;
+            color: #64748b;
+            font-size: .82rem;
+            margin-bottom: 1.5rem
+        }
+
+        .paket-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+            gap: .75rem
+        }
+
+        .pkt {
+            background: linear-gradient(145deg, rgba(14, 14, 26, .9), rgba(18, 18, 31, .7));
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all .25s;
+            cursor: pointer;
+            position: relative
+        }
+
+        .pkt:hover {
+            border-color: rgba(181, 23, 158, .3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(181, 23, 158, .15)
+        }
+
+        .pkt.hot::before {
+            content: '🔥 POPULER';
+            position: absolute;
+            top: -.5rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            padding: .15rem .6rem;
+            border-radius: 9999px;
+            font-size: .6rem;
+            font-weight: 900;
+            color: #fff
+        }
+
+        .pkt-ico {
+            font-size: 2.5rem;
+            margin-bottom: .5rem
+        }
+
+        .pkt-name {
+            font-weight: 900;
+            font-size: 1rem;
+            margin-bottom: .125rem
+        }
+
+        .pkt-qty {
+            color: #64748b;
+            font-size: .75rem;
+            margin-bottom: .5rem
+        }
+
+        .pkt-price {
+            font-size: 1.75rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #f0abfc, #fde68a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: .75rem
+        }
+
+        .pkt-btn {
+            width: 100%;
+            padding: .6rem;
+            background: linear-gradient(135deg, #b5179e, #7209b7);
+            border: none;
+            border-radius: .75rem;
+            color: #fff;
+            font-weight: 800;
+            font-size: .82rem;
+            cursor: pointer;
+            transition: all .2s;
+            font-family: inherit
+        }
+
+        .pkt-btn:hover {
+            opacity: .88
+        }
+
+        /* ── Form Section ── */
+        .form-section {
+            max-width: 32rem;
+            margin: 2rem auto;
+            padding: 0 1.5rem
+        }
+
+        .form-card {
+            background: linear-gradient(145deg, rgba(14, 14, 26, .95), rgba(18, 18, 31, .85));
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 1.5rem;
+            padding: 1.75rem;
+            overflow: hidden
+        }
+
+        .form-head {
+            text-align: center;
+            margin-bottom: 1.25rem
+        }
+
+        .form-head h2 {
+            font-size: 1.125rem;
+            font-weight: 900;
+            margin-bottom: .25rem
+        }
+
+        .form-head p {
+            font-size: .75rem;
+            color: #64748b
+        }
+
+        .form-pill {
+            display: none;
+            background: rgba(181, 23, 158, .12);
+            border: 1px solid rgba(181, 23, 158, .2);
+            border-radius: .75rem;
+            padding: .5rem .75rem;
+            margin-bottom: 1rem;
+            font-size: .78rem;
+            font-weight: 700;
+            text-align: center;
+            color: #f0abfc
+        }
+
+        .field {
+            margin-bottom: .875rem
+        }
+
+        .field label {
+            display: block;
+            font-size: .72rem;
+            font-weight: 700;
+            color: #94a3b8;
+            margin-bottom: .25rem
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: .6rem .875rem;
+            background: #080812;
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: .625rem;
+            color: #e2e8f0;
+            font-size: .82rem;
+            font-family: inherit;
+            transition: border .2s
+        }
+
+        .field input:focus,
+        .field select:focus {
+            outline: none;
+            border-color: #7209b7;
+            box-shadow: 0 0 0 3px rgba(114, 9, 183, .12)
+        }
+
+        .wa-row {
+            display: flex;
+            gap: 0
+        }
+
+        .wa-pre {
+            padding: .6rem .75rem;
+            background: #0e0e1a;
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-right: none;
+            border-radius: .625rem 0 0 .625rem;
+            color: #64748b;
+            font-size: .78rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: .25rem
+        }
+
+        .wa-row input {
+            border-radius: 0 .625rem .625rem 0
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .35rem;
+            margin-top: .25rem
+        }
+
+        .ch {
+            padding: .3rem .75rem;
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: 9999px;
+            background: none;
+            color: #94a3b8;
+            font-size: .72rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .15s
+        }
+
+        .ch:hover {
+            border-color: #7209b7;
+            color: #f0abfc
+        }
+
+        .ch.act {
+            background: linear-gradient(135deg, #b5179e, #7209b7);
+            border-color: transparent;
+            color: #fff
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: .75rem;
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            border: none;
+            border-radius: .875rem;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 900;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: .5rem;
+            transition: all .2s;
+            box-shadow: 0 6px 24px rgba(245, 158, 11, .3)
+        }
+
+        .form-submit:hover {
+            opacity: .88;
+            transform: translateY(-1px)
+        }
+
+        .form-submit:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+            transform: none
+        }
+
+        .form-note {
+            text-align: center;
+            color: #334155;
+            font-size: .68rem;
+            margin-top: .75rem
+        }
+
+        .form-alert {
+            background: rgba(248, 113, 113, .1);
+            border: 1px solid rgba(248, 113, 113, .2);
+            color: #fca5a5;
+            border-radius: .625rem;
+            padding: .5rem .75rem;
+            font-size: .75rem;
+            margin-bottom: .75rem;
+            display: none
+        }
+
+        /* ── Footer ── */
+        .footer {
+            text-align: center;
+            padding: 2rem 1.5rem;
+            color: #1e293b;
+            font-size: .72rem;
+            border-top: 1px solid rgba(255, 255, 255, .03);
+            margin-top: 2rem
+        }
+
+        /* ── WA FAB ── */
+        .fab-wa {
+            position: fixed;
+            bottom: 1.25rem;
+            right: 1.25rem;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: #25d366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            z-index: 50;
+            box-shadow: 0 4px 20px rgba(37, 211, 102, .4);
+            transition: transform .2s
+        }
+
+        .fab-wa:hover {
+            transform: scale(1.1)
+        }
+
+        /* ── Notif ── */
+        .notif {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(14, 14, 26, .95);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, .08);
+            border-radius: .875rem;
+            padding: .5rem .875rem;
+            font-size: .78rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .4);
+            z-index: 99;
+            transform: translateX(120%);
+            transition: transform .3s;
+            border-left: 3px solid #4ade80
+        }
+
+        .notif.show {
+            transform: none
+        }
+
+        @media(max-width:640px) {
+            .hero h1 {
+                font-size: 1.75rem
+            }
+
+            .countdown-wrap {
+                gap: .4rem
+            }
+
+            .cd-box {
+                min-width: 4rem;
+                padding: .5rem
+            }
+
+            .cd-num {
+                font-size: 1.5rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars"></div>
+    <div class="page">
+
+        <!-- Top Bar -->
+        <div class="topbar">
+            🌙 <span class="glow">Lailatul Qadr</span> — Lebih baik dari 1.000 bulan! Wakaf sekarang ⬇️
+        </div>
+
+        <!-- Nav -->
+        <div class="nav">
+            <div class="nav-brand">
+                <img src="logo.png" alt="LDI">
+                <span>Lentera Dakwah <span style="font-weight:400;color:#94a3b8">Indonesia</span></span>
+            </div>
+            <a href="#form-wakaf" class="nav-cta">🤲 Wakaf Sekarang</a>
+        </div>
+
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-badge">✨ Spesial Malam 10 Terakhir Ramadhan 1447H</div>
+            <h1>Raih Pahala <span class="accent">Lailatul Qadr</span><br>Dengan Wakaf Al-Qur'an</h1>
+            <p class="sub">Malam yang lebih baik dari 1.000 bulan. Wakafkan Al-Qur'an di 10 malam terakhir Ramadhan dan
+                raih pahala jariyah yang terus mengalir.</p>
+
+            <p class="hero-verse">إِنَّا أَنزَلْنَاهُ فِي لَيْلَةِ الْقَدْرِ ۝ وَمَا أَدْرَاكَ مَا لَيْلَةُ الْقَدْرِ ۝
+                لَيْلَةُ الْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ</p>
+            <p class="hero-trans">"Sesungguhnya Kami telah menurunkannya pada malam Lailatul Qadr. Dan tahukah kamu
+                apakah malam Lailatul Qadr itu? Malam Lailatul Qadr itu lebih baik dari seribu bulan." (QS. Al-Qadr:
+                1-3)</p>
+
+            <!-- Countdown -->
+            <div class="countdown-wrap">
+                <div class="cd-box">
+                    <p class="cd-num" id="cd-d">--</p>
+                    <p class="cd-lbl">Hari</p>
+                </div>
+                <div class="cd-box">
+                    <p class="cd-num" id="cd-h">--</p>
+                    <p class="cd-lbl">Jam</p>
+                </div>
+                <div class="cd-box">
+                    <p class="cd-num" id="cd-m">--</p>
+                    <p class="cd-lbl">Menit</p>
+                </div>
+                <div class="cd-box">
+                    <p class="cd-num" id="cd-s">--</p>
+                    <p class="cd-lbl">Detik</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Why 10 Malam -->
+        <div class="why-section">
+            <div class="why-grid">
+                <div class="why-card">
+                    <div class="why-ico">🌙</div>
+                    <p class="why-title">Malam Lailatul Qadr</p>
+                    <p class="why-desc">Amalan di malam ini setara dengan ibadah 83 tahun! Kesempatan langka yang hanya
+                        datang setahun sekali.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-ico">📖</div>
+                    <p class="why-title">Pahala Jariyah</p>
+                    <p class="why-desc">Setiap huruf Al-Qur'an yang dibaca dari mushaf wakaf Anda menjadi pahala yang
+                        terus mengalir.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-ico">🏕️</div>
+                    <p class="why-title">Pesantren Pelosok</p>
+                    <p class="why-desc">Mushaf disalurkan ke pesantren yang masih kekurangan Al-Qur'an di pelosok
+                        Indonesia.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-ico">🤲</div>
+                    <p class="why-title">I'tikaf Bermakna</p>
+                    <p class="why-desc">Lengkapi i'tikaf 10 hari terakhir Ramadhan dengan amalan wakaf yang pahalanya
+                        tak terputus.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paket -->
+        <div class="paket-section">
+            <h2 class="paket-title">Pilih Paket Wakaf Anda</h2>
+            <p class="paket-sub">1 Mushaf Al-Qur'an = Rp 80.000 — Disalurkan ke pesantren pelosok</p>
+            <div class="paket-grid">
+                <div class="pkt" onclick="pilihPaket(1,80000,this)">
+                    <div class="pkt-ico">📗</div>
+                    <p class="pkt-name">1 Mushaf</p>
+                    <p class="pkt-qty">Pahala untuk 1 santri</p>
+                    <p class="pkt-price">Rp 80rb</p>
+                    <button class="pkt-btn">Pilih Paket</button>
+                </div>
+                <div class="pkt hot" onclick="pilihPaket(5,400000,this)">
+                    <div class="pkt-ico">📚</div>
+                    <p class="pkt-name">5 Mushaf</p>
+                    <p class="pkt-qty">Pahala untuk 5 santri</p>
+                    <p class="pkt-price">Rp 400rb</p>
+                    <button class="pkt-btn">Pilih Paket</button>
+                </div>
+                <div class="pkt" onclick="pilihPaket(10,800000,this)">
+                    <div class="pkt-ico">🏛️</div>
+                    <p class="pkt-name">10 Mushaf</p>
+                    <p class="pkt-qty">Pahala untuk 1 kelas</p>
+                    <p class="pkt-price">Rp 800rb</p>
+                    <button class="pkt-btn">Pilih Paket</button>
+                </div>
+                <div class="pkt" onclick="pilihPaket(25,2000000,this)">
+                    <div class="pkt-ico">🕌</div>
+                    <p class="pkt-name">25 Mushaf</p>
+                    <p class="pkt-qty">Pahala untuk 1 pesantren</p>
+                    <p class="pkt-price">Rp 2jt</p>
+                    <button class="pkt-btn">Pilih Paket</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-section" id="form-wakaf">
+            <div class="form-card">
+                <div class="form-head">
+                    <h2>🤲 Form Wakaf Spesial</h2>
+                    <p>Malam 10 Terakhir Ramadhan 1447H</p>
+                </div>
+                <div class="form-pill" id="pill-paket"></div>
+                <div class="form-alert" id="form-alert"></div>
+                <div class="field">
+                    <label>Nama Lengkap *</label>
+                    <input id="f-nama" type="text" placeholder="Nama Anda…" autocomplete="name">
+                </div>
+                <div class="field">
+                    <label>No. WhatsApp *</label>
+                    <div class="wa-row"><span class="wa-pre">🇮🇩 +62</span><input id="f-wa" type="tel"
+                            placeholder="812xxxx" autocomplete="tel-national"></div>
+                </div>
+                <div class="field">
+                    <label>Provinsi *</label>
+                    <select id="f-prov" onchange="loadKotaItikaf()">
+                        <option value="">Pilih Provinsi...</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Kota / Kabupaten *</label>
+                    <select id="f-kota" onchange="loadKecItikaf()" disabled>
+                        <option value="">Pilih Kota...</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Kecamatan *</label>
+                    <select id="f-kec" disabled>
+                        <option value="">Pilih Kecamatan...</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Jumlah Donasi *</label>
+                    <div class="chip-row">
+                        <button class="ch" onclick="setAmt(this,80000)">Rp 80rb</button>
+                        <button class="ch" onclick="setAmt(this,400000)">Rp 400rb</button>
+                        <button class="ch" onclick="setAmt(this,800000)">Rp 800rb</button>
+                        <button class="ch" onclick="setAmt(this,2000000)">Rp 2jt</button>
+                    </div>
+                    <input id="f-jumlah" type="number" placeholder="Atau ketik nominal sendiri…"
+                        style="margin-top:.35rem">
+                </div>
+                <div class="field">
+                    <label>Jumlah Mushaf</label>
+                    <input id="f-qty" type="number" min="1" value="1" placeholder="1">
+                </div>
+                <div class="field">
+                    <label>Atas Nama (opsional — jika wakaf untuk orang lain)</label>
+                    <input id="f-atasnama" type="text" placeholder="Nama penerima wakaf…">
+                </div>
+                <div class="field">
+                    <label>Doa & Catatan (opsional)</label>
+                    <textarea id="f-doa" rows="3" placeholder="Tuliskan doa atau harapan Anda…"
+                        style="width:100%;padding:.6rem .875rem;background:#080812;border:1px solid rgba(255,255,255,.08);border-radius:.625rem;color:#e2e8f0;font-size:.82rem;font-family:inherit;resize:vertical"></textarea>
+                </div>
+                <button class="form-submit" id="btn-submit" onclick="submitForm()">🤲 Wakafkan Sekarang — Malam 10
+                    Terakhir</button>
+                <p class="form-note">Data Anda aman. Admin akan menghubungi via WhatsApp untuk konfirmasi.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>© 2026 Yayasan Lentera Dakwah Indonesia — Program Wakaf Al-Qur'an Ramadhan 1447H</p>
+        </div>
+    </div>
+
+    <!-- WA FAB -->
+    <a href="https://wa.me/6285163698187?text=Assalamu%27alaikum%2C%20saya%20ingin%20wakaf%20Al-Qur%27an%20Malam%2010%20Terakhir"
+        class="fab-wa" target="_blank" aria-label="WhatsApp">💬</a>
+    <div class="notif" id="notif"></div>
+
+    <script>
+        'use strict';
+        const API_BASE = location.hostname === 'localhost' || location.hostname === '127.0.0.1' ? '' : location.origin;
+        let selectedQty = 0, selectedAmt = 0;
+
+        // ── Countdown to end of Ramadhan 1447H (19 March 2026) ──
+        function updateCountdown() {
+            const end = new Date('2026-03-19T18:00:00+07:00').getTime();
+            const now = Date.now();
+            const diff = Math.max(0, end - now);
+            const d = Math.floor(diff / 864e5);
+            const h = Math.floor(diff % 864e5 / 36e5);
+            const m = Math.floor(diff % 36e5 / 6e4);
+            const s = Math.floor(diff % 6e4 / 1e3);
+            document.getElementById('cd-d').textContent = d;
+            document.getElementById('cd-h').textContent = String(h).padStart(2, '0');
+            document.getElementById('cd-m').textContent = String(m).padStart(2, '0');
+            document.getElementById('cd-s').textContent = String(s).padStart(2, '0');
+        }
+        updateCountdown(); setInterval(updateCountdown, 1000);
+
+        // ── Paket ──
+        function pilihPaket(qty, amt, el) {
+            selectedQty = qty; selectedAmt = amt;
+            document.querySelectorAll('.pkt').forEach(p => p.style.borderColor = 'rgba(255,255,255,.06)');
+            el.style.borderColor = '#b5179e';
+            document.getElementById('f-qty').value = qty;
+            document.getElementById('f-jumlah').value = amt;
+            document.querySelectorAll('.ch').forEach(c => c.classList.remove('act'));
+            document.querySelectorAll('.ch').forEach(c => { if (parseInt(c.textContent.replace(/\D/g, '')) * 1000 === amt || parseInt(c.textContent.replace(/\D/g, '')) === amt) c.classList.add('act'); });
+            const pill = document.getElementById('pill-paket');
+            pill.style.display = 'block';
+            pill.textContent = `🤲 ${qty} Mushaf — Rp ${amt.toLocaleString('id-ID')}`;
+            document.getElementById('form-wakaf').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function setAmt(el, amt) {
+            document.querySelectorAll('.ch').forEach(c => c.classList.remove('act'));
+            el.classList.add('act');
+            document.getElementById('f-jumlah').value = amt;
+            const qty = Math.max(1, Math.round(amt / 80000));
+            document.getElementById('f-qty').value = qty;
+        }
+
+        // ── Wilayah.id API ──
+        async function loadProvItikaf() {
+            try {
+                const res = await fetch('https://wilayah.id/api/provinces.json');
+                const data = await res.json();
+                const sel = document.getElementById('f-prov');
+                data.data.forEach(p => sel.add(new Option(p.name, p.code)));
+            } catch (e) { console.error('Load provinsi error', e); }
+        }
+        async function loadKotaItikaf() {
+            const pCode = document.getElementById('f-prov').value;
+            const selK = document.getElementById('f-kota');
+            const selKec = document.getElementById('f-kec');
+            selK.innerHTML = '<option value="">Pilih Kota...</option>';
+            selKec.innerHTML = '<option value="">Pilih Kecamatan...</option>';
+            selK.disabled = true; selKec.disabled = true;
+            if (!pCode) return;
+            try {
+                const res = await fetch(`https://wilayah.id/api/regencies/${pCode}.json`);
+                const data = await res.json();
+                data.data.forEach(k => selK.add(new Option(k.name, k.code)));
+                selK.disabled = false;
+            } catch (e) { console.error('Load kota error', e); }
+        }
+        async function loadKecItikaf() {
+            const kCode = document.getElementById('f-kota').value;
+            const selKec = document.getElementById('f-kec');
+            selKec.innerHTML = '<option value="">Pilih Kecamatan...</option>';
+            selKec.disabled = true;
+            if (!kCode) return;
+            try {
+                const res = await fetch(`https://wilayah.id/api/districts/${kCode}.json`);
+                const data = await res.json();
+                data.data.forEach(k => selKec.add(new Option(k.name, k.name)));
+                selKec.disabled = false;
+            } catch (e) { console.error('Load kecamatan error', e); }
+        }
+        loadProvItikaf();
+
+        // ── Submit ──
+        async function submitForm() {
+            const alert = document.getElementById('form-alert');
+            alert.style.display = 'none';
+            const nama = document.getElementById('f-nama').value.trim();
+            const wa = document.getElementById('f-wa').value.trim();
+            const kotaSel = document.getElementById('f-kota');
+            const kota = kotaSel.options[kotaSel.selectedIndex]?.text || '';
+            const kec = document.getElementById('f-kec').value.trim();
+            const jumlah = parseInt(document.getElementById('f-jumlah').value) || 0;
+            const qty = parseInt(document.getElementById('f-qty').value) || 1;
+            const atasNama = document.getElementById('f-atasnama').value.trim();
+            const doa = (document.getElementById('f-doa')?.value || '').trim();
+
+            if (!nama || nama.length < 2) { showAlert('Masukkan nama lengkap.'); return; }
+            if (!wa || wa.length < 8) { showAlert('Masukkan nomor WhatsApp yang benar.'); return; }
+            if (!kec) { showAlert('Pilih kecamatan Anda.'); return; }
+            if (jumlah < 10000) { showAlert('Minimal donasi Rp 10.000.'); return; }
+
+            const btn = document.getElementById('btn-submit');
+            btn.disabled = true; btn.textContent = '⏳ Menghubungkan ke CS…';
+
+            try {
+                const body = { nama, wa: '0' + wa.replace(/^0+/, ''), kota, kecamatan: kec, jumlah, qty_mushaf: qty, atas_nama: atasNama || null, doa_catatan: doa || null, source_page: '/itikaf.html' };
+                const r = await fetch(API_BASE + '/api/donasi', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                const j = await r.json();
+                if (!j.success) throw new Error(j.message || 'Gagal');
+
+                // Track conversion
+                if (typeof window.trackDonasi === 'function') window.trackDonasi(jumlah);
+
+                // Redirect via WA Rotator URL
+                window.location.href = j.wa_url;
+
+                showNotif('✅ Jazakallahu khairan! Admin akan menghubungi Anda.');
+                btn.textContent = '✅ Terkirim!';
+                setTimeout(() => { btn.disabled = false; btn.textContent = '🤲 Wakafkan Sekarang — Malam 10 Terakhir'; }, 3000);
+            } catch (e) {
+                showAlert('❌ ' + e.message + '. Coba lagi.');
+                btn.disabled = false; btn.textContent = '🤲 Wakafkan Sekarang — Malam 10 Terakhir';
+            }
+        }
+
+        function showAlert(msg) { const el = document.getElementById('form-alert'); el.textContent = msg; el.style.display = 'block'; }
+
+        let ntTimer;
+        function showNotif(msg) { const el = document.getElementById('notif'); el.textContent = msg; el.classList.add('show'); clearTimeout(ntTimer); ntTimer = setTimeout(() => el.classList.remove('show'), 5000); }
+    </script>
+</body>
+
+</html>

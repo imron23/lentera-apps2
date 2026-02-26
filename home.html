@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Wakaf — Lentera Dakwah Indonesia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7209b7;
+            --secondary: #b5179e;
+            --accent: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: #ffffff;
+            padding: 1rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 1.25rem;
+            font-weight: 900;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .brand img {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 1.25rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(114, 9, 183, 0.1);
+        }
+
+        .card-img {
+            height: 180px;
+            width: 100%;
+            object-fit: cover;
+            background: #e2e8f0;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-badge {
+            align-self: flex-start;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-desc {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        /* Bar */
+        .progress-box {
+            margin-bottom: 1.5rem;
+        }
+
+        .p-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+
+        .p-bar {
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .p-val {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            border-radius: 4px;
+            width: 0%;
+            transition: width 1s ease;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            text-decoration: none;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
+            font-weight: 800;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="brand">
+            <img src="logo.png" alt="LDI Logo" onerror="this.src='https://placehold.co/32x32/7209b7/white?text=LDI'">
+            Lentera Dakwah Indonesia
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Pilih Program Kebaikanmu</h1>
+        <p>Bersama kita tebarkan cahaya Al-Qur'an ke seluruh pelosok Nusantara.</p>
+    </section>
+
+    <main class="container">
+        <h2 class="section-title">Program Sosial & Wakaf Tersedia</h2>
+        <div class="grid">
+
+            <!-- Reguler -->
+            <div class="card">
+                <img src="aset foto/lp2.jpeg" class="card-img" alt="Wakaf Reguler"
+                    onerror="this.src='https://images.unsplash.com/photo-1609599006353-e629aaab31bf?auto=format&fit=crop&q=80&w=600&h=400'">
+                <div class="card-body">
+                    <span class="card-badge">🌟 Program Unggulan</span>
+                    <h3 class="card-title">Wakaf Al-Qur'an Reguler</h3>
+                    <p class="card-desc">Bantu penuhi jutaan kebutuhan mushaf Al-Qur'an untuk santri tahfidz dan
+                        masyarakat di pelosok Indonesia setiap harinya.</p>
+
+                    <div class="progress-box">
+                        <div class="p-top"><span>Terkumpul: <span id="rp-reguler">Rp 0</span></span><span>Target: Rp
+                                50Jt</span></div>
+                        <div class="p-bar">
+                            <div class="p-val" id="bar-reguler"></div>
+                        </div>
+                    </div>
+
+                    <a href="/index.html" class="btn">Lihat Detail & Wakaf</a>
+                </div>
+            </div>
+
+            <!-- Itikaf -->
+            <div class="card">
+                <img src="aset foto/wa1.jpeg" class="card-img" alt="Wakaf Itikaf"
+                    onerror="this.src='https://images.unsplash.com/photo-1596404751412-2580fe3fbdff?auto=format&fit=crop&q=80&w=600&h=400'">
+                <div class="card-body">
+                    <span class="card-badge"
+                        style="background:rgba(181,23,158,0.1); color:var(--secondary); border-color:rgba(181,23,158,0.2)">🌙
+                        Spesial Ramadhan</span>
+                    <h3 class="card-title">Wakaf Lailatul Qadr (10 Hari Terakhir)</h3>
+                    <p class="card-desc">Kejar pahala jariyah yang setara dengan beribadah 1.000 bulan dengan berwakaf
+                        Al-Qur'an di malam-malam istimewa Ramadhan.</p>
+
+                    <div class="progress-box">
+                        <div class="p-top"><span>Terkumpul: <span id="rp-itikaf">Rp 0</span></span><span>Target: Rp
+                                20Jt</span></div>
+                        <div class="p-bar">
+                            <div class="p-val" id="bar-itikaf"></div>
+                        </div>
+                    </div>
+
+                    <a href="/itikaf.html" class="btn"
+                        style="background: linear-gradient(135deg, #b5179e, #4361ee)">Lihat Detail & Wakaf</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        &copy; 2026 Yayasan Lentera Dakwah Indonesia. Semua hak cipta dilindungi.
+    </footer>
+
+    <script>
+        // Fetch stats to update progress bars
+        async function fetchStats() {
+            try {
+                // In a real scenario, you'd fetch from different endpoints or the same one for aggregate data
+                const res = await fetch('/api/stats');
+                const data = await res.json();
+                if (data.success) {
+                    const total = data.total_terkumpul || 0;
+
+                    // Mock split for demonstration. Normally you count from DB per program/source_page.
+                    // Here we assume 70% goes to reguler and 30% to itikaf just for display if we don't have separate stats API.
+                    const reguler = Math.floor(total * 0.7);
+                    const itikaf = total - reguler;
+
+                    document.getElementById('rp-reguler').textContent = 'Rp ' + reguler.toLocaleString('id-ID');
+                    document.getElementById('bar-reguler').style.width = Math.min(100, (reguler / 50000000) * 100) + '%';
+
+                    document.getElementById('rp-itikaf').textContent = 'Rp ' + itikaf.toLocaleString('id-ID');
+                    document.getElementById('bar-itikaf').style.width = Math.min(100, (itikaf / 20000000) * 100) + '%';
+                }
+            } catch (e) { }
+        }
+        document.addEventListener('DOMContentLoaded', fetchStats);
+    </script>
+</body>
+
+</html>

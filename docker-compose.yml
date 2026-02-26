@@ -1,0 +1,56 @@
+services:
+  # ── PostgreSQL Database ─────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: ldi_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: Imron23
+      POSTGRES_USER: Imron23
+      POSTGRES_PASSWORD: "@Imron23"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U Imron23 -d Imron23" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ldi_net
+
+  # ── Node.js Backend ─────────────────────────────────────────────
+  backend:
+    build: ./backend
+    container_name: ldi_backend
+    restart: always
+    env_file: ./backend/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - ldi_net
+
+  # ── Nginx (Static + API proxy) ──────────────────────────────────
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: ldi_nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - .:/usr/share/nginx/html:ro
+    depends_on:
+      - backend
+    networks:
+      - ldi_net
+
+volumes:
+  postgres_data:
+    name: ldi_postgres_data
+
+networks:
+  ldi_net:
+    name: ldi_network
+    driver: bridge

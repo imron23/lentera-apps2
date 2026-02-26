@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — LDI Wakaf</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f1a;
+            color: #e2e8f0;
+            min-height: 100vh
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none
+        }
+
+        /* Login */
+        .login-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 1.5rem;
+        }
+
+        .login-card {
+            background: #1e1e2e;
+            border: 1px solid #2d2d44;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 24rem;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, .5);
+        }
+
+        .login-logo {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem
+        }
+
+        .login-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: .5rem
+        }
+
+        .login-sub {
+            font-size: .875rem;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 2rem
+        }
+
+        .login-label {
+            font-size: .8rem;
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: .375rem;
+            display: block
+        }
+
+        .login-input {
+            width: 100%;
+            padding: .75rem 1rem;
+            background: #0f0f1a;
+            border: 1px solid #2d2d44;
+            border-radius: .75rem;
+            color: #e2e8f0;
+            font-size: .9rem;
+            font-family: inherit;
+            margin-bottom: 1.25rem;
+            transition: border .2s;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #7209b7
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: .875rem;
+            background: linear-gradient(135deg, #b5179e, #7209b7);
+            border: none;
+            border-radius: .875rem;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: inherit;
+            transition: opacity .2s;
+            box-shadow: 0 4px 20px rgba(181, 23, 158, .4);
+        }
+
+        .login-btn:hover {
+            opacity: .9
+        }
+
+        .login-err {
+            color: #f87171;
+            font-size: .8rem;
+            text-align: center;
+            margin-top: .75rem
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none
+        }
+
+        .topbar {
+            background: #1e1e2e;
+            border-bottom: 1px solid #2d2d44;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .topbar-brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem
+        }
+
+        .topbar-brand .icon {
+            font-size: 1.5rem
+        }
+
+        .topbar-brand .name {
+            font-weight: 800;
+            font-size: 1rem
+        }
+
+        .topbar-brand .sub {
+            font-size: .75rem;
+            color: #64748b
+        }
+
+        .logout-btn {
+            padding: .5rem 1.25rem;
+            border: 1px solid #2d2d44;
+            border-radius: 9999px;
+            background: none;
+            color: #94a3b8;
+            font-size: .8rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all .2s;
+        }
+
+        .logout-btn:hover {
+            border-color: #f87171;
+            color: #f87171
+        }
+
+        .main {
+            padding: 1.5rem;
+            max-width: 80rem;
+            margin: 0 auto
+        }
+
+        /* Stats cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-box {
+            background: #1e1e2e;
+            border: 1px solid #2d2d44;
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .stat-box .lbl {
+            font-size: .75rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: .5rem
+        }
+
+        .stat-box .val {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #e2e8f0
+        }
+
+        .stat-box .sub {
+            font-size: .75rem;
+            color: #475569;
+            margin-top: .25rem
+        }
+
+        /* Table */
+        .table-wrap {
+            background: #1e1e2e;
+            border: 1px solid #2d2d44;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            border-bottom: 1px solid #2d2d44;
+        }
+
+        .table-title {
+            font-weight: 800;
+            font-size: 1rem
+        }
+
+        .table-actions {
+            display: flex;
+            gap: .75rem;
+            align-items: center;
+            flex-wrap: wrap
+        }
+
+        .search-input {
+            padding: .5rem 1rem;
+            background: #0f0f1a;
+            border: 1px solid #2d2d44;
+            border-radius: .625rem;
+            color: #e2e8f0;
+            font-size: .85rem;
+            font-family: inherit;
+            width: 14rem;
+            transition: border .2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #7209b7
+        }
+
+        .export-btn {
+            padding: .5rem 1.25rem;
+            background: linear-gradient(135deg, #b5179e, #7209b7);
+            border: none;
+            border-radius: .625rem;
+            color: #fff;
+            font-size: .8rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .refresh-btn {
+            padding: .5rem 1rem;
+            background: #0f0f1a;
+            border: 1px solid #2d2d44;
+            border-radius: .625rem;
+            color: #94a3b8;
+            font-size: .8rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .refresh-btn:hover {
+            border-color: #7209b7;
+            color: #e2e8f0
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .85rem
+        }
+
+        thead {
+            background: #13131f
+        }
+
+        th {
+            padding: .875rem 1rem;
+            text-align: left;
+            font-size: .75rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            white-space: nowrap
+        }
+
+        td {
+            padding: .875rem 1rem;
+            border-top: 1px solid #1a1a2e;
+            vertical-align: middle
+        }
+
+        tr:hover td {
+            background: rgba(114, 9, 183, .06)
+        }
+
+        .badge-nominal {
+            background: rgba(181, 23, 158, .15);
+            color: #f0abfc;
+            padding: .2rem .6rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            font-size: .78rem;
+        }
+
+        .wa-link {
+            color: #4ade80;
+            font-size: .8rem
+        }
+
+        .empty-state {
+            padding: 4rem;
+            text-align: center;
+            color: #475569;
+        }
+
+        .empty-state .icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem
+        }
+
+        .loading-row td {
+            text-align: center;
+            padding: 3rem;
+            color: #475569
+        }
+
+        /* Responsive */
+        @media(max-width: 600px) {
+            .search-input {
+                width: 100%
+            }
+
+            th:nth-child(4),
+            td:nth-child(4),
+            th:nth-child(5),
+            td:nth-child(5) {
+                display: none
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Login Screen ── -->
+    <div class="login-wrap" id="login-screen">
+        <div class="login-card">
+            <div class="login-logo">🔒</div>
+            <h1 class="login-title">Admin Panel</h1>
+            <p class="login-sub">Yayasan Lentera Dakwah Indonesia</p>
+            <label class="login-label" for="admin-pass">Password Admin</label>
+            <input id="admin-pass" type="password" class="login-input" placeholder="Masukkan password admin…"
+                onkeydown="if(event.key==='Enter')doLogin()">
+            <button class="login-btn" onclick="doLogin()">🔓 Masuk</button>
+            <p class="login-err" id="login-err"></p>
+        </div>
+    </div>
+
+    <!-- ── Dashboard ── -->
+    <div class="dashboard" id="dashboard">
+        <div class="topbar">
+            <div class="topbar-brand">
+                <span class="icon">📖</span>
+                <div>
+                    <p class="name">Wakaf Al-Qur'an — Admin</p>
+                    <p class="sub">Yayasan Lentera Dakwah Indonesia</p>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="doLogout()">🚪 Keluar</button>
+        </div>
+
+        <div class="main">
+            <!-- Stats -->
+            <div class="stats-row" id="stats-row">
+                <div class="stat-box">
+                    <p class="lbl">Total Donatur</p>
+                    <p class="val" id="s-donatur">—</p>
+                    <p class="sub">Orang yang berdonasi</p>
+                </div>
+                <div class="stat-box">
+                    <p class="lbl">Total Terkumpul</p>
+                    <p class="val" id="s-rupiah">—</p>
+                    <p class="sub">Rupiah</p>
+                </div>
+                <div class="stat-box">
+                    <p class="lbl">Mushaf Wakaf</p>
+                    <p class="val" id="s-mushaf">—</p>
+                    <p class="sub">Estimasi jumlah mushaf</p>
+                </div>
+                <div class="stat-box">
+                    <p class="lbl">Rata-rata Donasi</p>
+                    <p class="val" id="s-avg">—</p>
+                    <p class="sub">Rupiah per donatur</p>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-wrap">
+                <div class="table-header">
+                    <p class="table-title">📋 Daftar Donatur</p>
+                    <div class="table-actions">
+                        <input id="search-input" type="text" class="search-input" placeholder="🔍 Cari nama / kota…"
+                            oninput="filterTable()">
+                        <button class="export-btn" onclick="exportCSV()">⬇️ Export CSV</button>
+                        <button class="refresh-btn" onclick="loadData()">🔄 Refresh</button>
+                    </div>
+                </div>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Nama</th>
+                                <th>Kecamatan / Kota</th>
+                                <th>WhatsApp</th>
+                                <th>Atas Nama</th>
+                                <th>Jumlah</th>
+                                <th>Mushaf</th>
+                                <th>Waktu</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbl-body">
+                            <tr class="loading-row">
+                                <td colspan="8">⏳ Memuat data…</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        'use strict';
+
+        // API base (same host as this page in prod; localhost in dev)
+        // API: selalu pakai path relatif → lewat Nginx proxy di port 80
+        const API = '';
+
+        let adminKey = '';
+        let allRows = [];
+
+        // ── Login ─────────────────────────────────────────────
+        async function doLogin() {
+            const pass = document.getElementById('admin-pass').value.trim();
+            const err = document.getElementById('login-err');
+            if (!pass) { err.textContent = 'Masukkan password terlebih dahulu.'; return; }
+
+            err.textContent = '';
+            try {
+                const res = await fetch(API + '/api/admin/donatur', {
+                    headers: { 'X-Admin-Key': pass }
+                });
+                if (!res.ok) { err.textContent = '❌ Password salah.'; return; }
+                adminKey = pass;
+                sessionStorage.setItem('ldi_admin_key', pass);
+                showDashboard();
+            } catch {
+                err.textContent = '⚠️ Tidak dapat terhubung ke server.';
+            }
+        }
+
+        function doLogout() {
+            sessionStorage.removeItem('ldi_admin_key');
+            adminKey = '';
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+
+        // Auto-login if key still in session
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = sessionStorage.getItem('ldi_admin_key');
+            if (saved) { adminKey = saved; showDashboard(); }
+        });
+
+        // ── Dashboard ─────────────────────────────────────────
+        function showDashboard() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            loadData();
+        }
+
+        async function loadData() {
+            const tbody = document.getElementById('tbl-body');
+            tbody.innerHTML = '<tr class="loading-row"><td colspan="8">⏳ Memuat data…</td></tr>';
+            try {
+                const res = await fetch(API + '/api/admin/donatur', {
+                    headers: { 'X-Admin-Key': adminKey }
+                });
+                if (!res.ok) { doLogout(); return; }
+                const json = await res.json();
+                allRows = json.rows || [];
+                renderStats(json.stats);
+                renderTable(allRows);
+            } catch {
+                tbody.innerHTML = '<tr class="loading-row"><td colspan="8">❌ Gagal memuat data. Cek koneksi server.</td></tr>';
+            }
+        }
+
+        function renderStats(s) {
+            if (!s) return;
+            const fmt = n => 'Rp\u00a0' + Number(n).toLocaleString('id-ID');
+            document.getElementById('s-donatur').textContent = Number(s.total_donatur).toLocaleString('id-ID');
+            document.getElementById('s-rupiah').textContent = fmt(s.total_terkumpul);
+            document.getElementById('s-mushaf').textContent = Number(s.total_mushaf).toLocaleString('id-ID');
+            const avg = s.total_donatur > 0 ? Math.round(s.total_terkumpul / s.total_donatur) : 0;
+            document.getElementById('s-avg').textContent = fmt(avg);
+        }
+
+        function renderTable(rows) {
+            const tbody = document.getElementById('tbl-body');
+            if (!rows.length) {
+                tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="icon">📭</div><p>Belum ada data donatur.</p></div></td></tr>`;
+                return;
+            }
+            const fmt = n => 'Rp\u00a0' + Number(n).toLocaleString('id-ID');
+            const fmtDt = d => new Date(d).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
+            tbody.innerHTML = rows.map((r, i) => `
+        <tr>
+            <td style="color:#475569">${i + 1}</td>
+            <td style="font-weight:700">${esc(r.nama)}</td>
+            <td>${esc(r.kecamatan || '—')}</td>
+            <td><a class="wa-link" href="https://wa.me/${r.wa.replace(/\D/g, '')}" target="_blank">📱 ${esc(r.wa)}</a></td>
+            <td style="color:#94a3b8;font-size:.8rem">${r.atas_nama ? '🎁 ' + esc(r.atas_nama) : '—'}</td>
+            <td><span class="badge-nominal">${fmt(r.jumlah)}</span></td>
+            <td style="text-align:center">${r.qty_mushaf || '—'}</td>
+            <td style="color:#64748b;font-size:.78rem;white-space:nowrap">${fmtDt(r.created_at)}</td>
+        </tr>
+    `).join('');
+        }
+
+        function esc(s) {
+            return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // ── Search ────────────────────────────────────────────
+        function filterTable() {
+            const q = document.getElementById('search-input').value.toLowerCase();
+            if (!q) { renderTable(allRows); return; }
+            renderTable(allRows.filter(r =>
+                (r.nama || '').toLowerCase().includes(q) ||
+                (r.kecamatan || '').toLowerCase().includes(q) ||
+                (r.wa || '').includes(q)
+            ));
+        }
+
+        // ── Export CSV ────────────────────────────────────────
+        function exportCSV() {
+            if (!allRows.length) { alert('Belum ada data untuk diekspor.'); return; }
+            const headers = ['ID', 'Nama', 'WA', 'Kecamatan', 'Jumlah', 'Qty Mushaf', 'Atas Nama', 'Waktu'];
+            const rows = allRows.map(r => [
+                r.id, csvQ(r.nama), csvQ(r.wa), csvQ(r.kecamatan || ''),
+                r.jumlah, r.qty_mushaf || '', csvQ(r.atas_nama || ''),
+                new Date(r.created_at).toLocaleString('id-ID')
+            ]);
+            const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = Object.assign(document.createElement('a'), { href: url, download: 'donatur-ldi-' + new Date().toISOString().slice(0, 10) + '.csv' });
+            document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        }
+        function csvQ(s) { return '"' + String(s || '').replace(/"/g, '""') + '"' }
+    </script>
+</body>
+
+</html>
