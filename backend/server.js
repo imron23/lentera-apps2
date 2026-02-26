@@ -262,7 +262,7 @@ app.get('/api/admin/analytics', requireAdmin, async (req, res) => {
              GROUP BY DATE(created_at) ORDER BY date`
         );
         const regions = await db.query(
-            `SELECT COALESCE(u.kota, u.kecamatan, 'Tidak diisi') AS region,
+            `SELECT COALESCE(u.kecamatan, 'Tidak diisi') AS region,
                     COUNT(*)::int AS count, COALESCE(SUM(d.jumlah),0)::bigint AS amount
              FROM donations d JOIN users u ON d.no_wa = u.no_wa
              GROUP BY region ORDER BY amount DESC LIMIT 10`
