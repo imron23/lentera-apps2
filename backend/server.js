@@ -19,11 +19,11 @@ app.set('trust proxy', 1);
 // ── Middleware ──────────────────────────────────────────────────
 app.use(express.json({ limit: '20kb' }));
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS || 'http://localhost,http://127.0.0.1,null';
 app.use(cors({
-    origin: process.env.ALLOWED_ORIGINS
-        ? process.env.ALLOWED_ORIGINS.split(',')
-        : ['http://localhost', 'http://127.0.0.1', 'null'],
+    origin: allowedOrigins === '*' ? true : allowedOrigins.split(','),
     methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
+    credentials: true,
 }));
 
 // ── CSRF Token Endpoint ─────────────────────────────────────────
