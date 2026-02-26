@@ -1619,7 +1619,7 @@
                 updateCRM(j.stats);
                 applyFilterLeads();
                 applyFilterDonatur();
-                loadCharts();
+                loadAnalytics();
                 showNotif('✅ Data berhasil dimuat', 'ok');
             } catch {
                 showNotif('❌ Gagal menghubungi server', 'err');
@@ -1632,6 +1632,12 @@
             document.getElementById('c-hubungi').textContent = stats.total_dihubungi || 0;
             document.getElementById('c-konfirm').textContent = stats.total_terkonfirmasi || 0;
             document.getElementById('c-done').textContent = stats.total_selesai || 0;
+        }
+
+        function renderStats(stats) {
+            document.getElementById('s-don').textContent = (stats.total_donatur || 0).toLocaleString('id-ID');
+            document.getElementById('s-rp').textContent = 'Rp' + (parseInt(stats.total_terkumpul) || 0).toLocaleString('id-ID');
+            document.getElementById('s-msh').textContent = (stats.total_mushaf || 0).toLocaleString('id-ID');
         }
 
         function filterStatus(st) {
