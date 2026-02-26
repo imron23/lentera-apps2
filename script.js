@@ -144,8 +144,7 @@ function getJumlah() {
 async function submitDonasi() {
     const nama = (document.getElementById('f-nama')?.value || '').trim();
     const wa = (document.getElementById('f-wa')?.value || '').trim();
-    const kotaSel = document.getElementById('f-kota');
-    const kota = kotaSel && kotaSel.options ? kotaSel.options[kotaSel.selectedIndex]?.text : '';
+    const kota = (document.getElementById('f-kota-hidden')?.value || '').trim();
     const kecamatan = (document.getElementById('f-kecamatan')?.value || '').trim();
     const jumlah = getJumlah();
     const ortuCb = document.getElementById('f-ortu-check')?.checked;

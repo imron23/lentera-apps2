@@ -755,23 +755,13 @@
                     <div class="wa-row"><span class="wa-pre">🇮🇩 +62</span><input id="f-wa" type="tel"
                             placeholder="812xxxx" autocomplete="tel-national"></div>
                 </div>
-                <div class="field">
-                    <label>Provinsi *</label>
-                    <select id="f-prov" onchange="loadKotaItikaf()">
-                        <option value="">Pilih Provinsi...</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>Kota / Kabupaten *</label>
-                    <select id="f-kota" onchange="loadKecItikaf()" disabled>
-                        <option value="">Pilih Kota...</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>Kecamatan *</label>
-                    <select id="f-kec" disabled>
-                        <option value="">Pilih Kecamatan...</option>
-                    </select>
+                <div class="field" style="position:relative">
+                    <label>Kecamatan / Kota *</label>
+                    <input id="f-kec" type="text" placeholder="Ketik minimal 3 huruf kecamatan…" autocomplete="off">
+                    <input type="hidden" id="f-kota-hidden" value="">
+                    <div id="kec-dd-itikaf"
+                        style="display:none;position:absolute;left:0;right:0;top:100%;background:#0d0d1a;border:1px solid rgba(255,255,255,.15);border-radius:.625rem;max-height:200px;overflow-y:auto;z-index:50">
+                    </div>
                 </div>
                 <div class="field">
                     <label>Jumlah Donasi *</label>
@@ -858,44 +848,33 @@
             document.getElementById('f-qty').value = qty;
         }
 
-        // ── Wilayah.id API ──
-        async function loadProvItikaf() {
-            try {
-                const res = await fetch('https://wilayah.id/api/provinces.json');
-                const data = await res.json();
-                const sel = document.getElementById('f-prov');
-                data.data.forEach(p => sel.add(new Option(p.name, p.code)));
-            } catch (e) { console.error('Load provinsi error', e); }
-        }
-        async function loadKotaItikaf() {
-            const pCode = document.getElementById('f-prov').value;
-            const selK = document.getElementById('f-kota');
-            const selKec = document.getElementById('f-kec');
-            selK.innerHTML = '<option value="">Pilih Kota...</option>';
-            selKec.innerHTML = '<option value="">Pilih Kecamatan...</option>';
-            selK.disabled = true; selKec.disabled = true;
-            if (!pCode) return;
-            try {
-                const res = await fetch(`https://wilayah.id/api/regencies/${pCode}.json`);
-                const data = await res.json();
-                data.data.forEach(k => selK.add(new Option(k.name, k.code)));
-                selK.disabled = false;
-            } catch (e) { console.error('Load kota error', e); }
-        }
-        async function loadKecItikaf() {
-            const kCode = document.getElementById('f-kota').value;
-            const selKec = document.getElementById('f-kec');
-            selKec.innerHTML = '<option value="">Pilih Kecamatan...</option>';
-            selKec.disabled = true;
-            if (!kCode) return;
-            try {
-                const res = await fetch(`https://wilayah.id/api/districts/${kCode}.json`);
-                const data = await res.json();
-                data.data.forEach(k => selKec.add(new Option(k.name, k.name)));
-                selKec.disabled = false;
-            } catch (e) { console.error('Load kecamatan error', e); }
-        }
-        loadProvItikaf();
+        // ── Kecamatan Autocomplete ──
+        (function () {
+            const inp = document.getElementById('f-kec');
+            const dd = document.getElementById('kec-dd-itikaf');
+            const hid = document.getElementById('f-kota-hidden');
+            let timer = null;
+            inp.addEventListener('input', function () {
+                const q = this.value.trim();
+                clearTimeout(timer);
+                if (q.length < 3) { dd.style.display = 'none'; return; }
+                timer = setTimeout(async () => {
+                    try {
+                        const r = await fetch(API_BASE + '/api/wilayah/search?q=' + encodeURIComponent(q));
+                        const j = await r.json();
+                        if (!j.data || !j.data.length) { dd.innerHTML = '<div style="padding:.6rem 1rem;color:rgba(255,255,255,.4);font-size:.82rem">Tidak ditemukan</div>'; dd.style.display = 'block'; return; }
+                        dd.innerHTML = j.data.map(d => '<div class="kec-opt" data-kec="' + d.kecamatan + '" data-kota="' + d.kota + '" style="padding:.5rem .75rem;cursor:pointer;font-size:.82rem;border-bottom:1px solid rgba(255,255,255,.06);color:#e2e8f0;transition:background .15s"><strong>' + d.kecamatan + '</strong> <span style="color:rgba(255,255,255,.35);font-size:.72rem">' + d.kota + '</span></div>').join('');
+                        dd.style.display = 'block';
+                        dd.querySelectorAll('.kec-opt').forEach(el => {
+                            el.onmouseenter = () => el.style.background = 'rgba(255,255,255,.06)';
+                            el.onmouseleave = () => el.style.background = 'transparent';
+                            el.onclick = () => { inp.value = el.dataset.kec; hid.value = el.dataset.kota; dd.style.display = 'none'; };
+                        });
+                    } catch (e) { dd.style.display = 'none'; }
+                }, 300);
+            });
+            document.addEventListener('click', e => { if (!inp.contains(e.target) && !dd.contains(e.target)) dd.style.display = 'none'; });
+        })();
 
         // ── Submit ──
         async function submitForm() {
@@ -903,8 +882,7 @@
             alert.style.display = 'none';
             const nama = document.getElementById('f-nama').value.trim();
             const wa = document.getElementById('f-wa').value.trim();
-            const kotaSel = document.getElementById('f-kota');
-            const kota = kotaSel.options[kotaSel.selectedIndex]?.text || '';
+            const kota = (document.getElementById('f-kota-hidden')?.value || '').trim();
             const kec = document.getElementById('f-kec').value.trim();
             const jumlah = parseInt(document.getElementById('f-jumlah').value) || 0;
             const qty = parseInt(document.getElementById('f-qty').value) || 1;
@@ -913,7 +891,7 @@
 
             if (!nama || nama.length < 2) { showAlert('Masukkan nama lengkap.'); return; }
             if (!wa || wa.length < 8) { showAlert('Masukkan nomor WhatsApp yang benar.'); return; }
-            if (!kec) { showAlert('Pilih kecamatan Anda.'); return; }
+            if (!kec) { showAlert('Ketik dan pilih kecamatan Anda.'); return; }
             if (jumlah < 10000) { showAlert('Minimal donasi Rp 10.000.'); return; }
 
             const btn = document.getElementById('btn-submit');
@@ -925,10 +903,7 @@
                 const j = await r.json();
                 if (!j.success) throw new Error(j.message || 'Gagal');
 
-                // Track conversion
                 if (typeof window.trackDonasi === 'function') window.trackDonasi(jumlah);
-
-                // Redirect via WA Rotator URL
                 window.location.href = j.wa_url;
 
                 showNotif('✅ Jazakallahu khairan! Admin akan menghubungi Anda.');

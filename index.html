@@ -485,25 +485,14 @@
                         </div>
                     </div>
 
-                    <!-- Provinsi & Kota & Kecamatan -->
-                    <div style="display:grid; grid-template-columns:1fr; gap:0.5rem">
-                        <div>
-                            <label class="field-label" for="f-prov">Provinsi <span class="req">*</span></label>
-                            <select id="f-prov" class="field-input" onchange="loadKota()" required>
-                                <option value="">Pilih Provinsi...</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="field-label" for="f-kota">Kota / Kabupaten <span class="req">*</span></label>
-                            <select id="f-kota" class="field-input" onchange="loadKecamatan()" disabled required>
-                                <option value="">Pilih Kota / Kabupaten...</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="field-label" for="f-kecamatan">Kecamatan <span class="req">*</span></label>
-                            <select id="f-kecamatan" class="field-input" disabled required>
-                                <option value="">Pilih Kecamatan...</option>
-                            </select>
+                    <!-- Kecamatan Autocomplete -->
+                    <div style="position:relative">
+                        <label class="field-label" for="f-kecamatan">Kecamatan / Kota <span class="req">*</span></label>
+                        <input id="f-kecamatan" type="text" class="field-input"
+                            placeholder="Ketik minimal 3 huruf kecamatan…" autocomplete="off" required>
+                        <input type="hidden" id="f-kota-hidden" value="">
+                        <div id="kec-dropdown"
+                            style="display:none; position:absolute; left:0; right:0; top:100%; background:#fff; border:1px solid #e2e8f0; border-radius:0.75rem; max-height:220px; overflow-y:auto; z-index:50; box-shadow:0 10px 30px rgba(0,0,0,0.12);">
                         </div>
                     </div>
 
@@ -551,8 +540,10 @@
 
                     <!-- Doa / Catatan -->
                     <div>
-                        <label class="field-label" for="f-doa">Doa & Catatan <span class="req" style="color:var(--text-muted); font-weight:normal">(opsional)</span></label>
-                        <textarea id="f-doa" class="field-input" rows="3" placeholder="Tuliskan doa atau harapan Anda..."></textarea>
+                        <label class="field-label" for="f-doa">Doa & Catatan <span class="req"
+                                style="color:var(--text-muted); font-weight:normal">(opsional)</span></label>
+                        <textarea id="f-doa" class="field-input" rows="3"
+                            placeholder="Tuliskan doa atau harapan Anda..."></textarea>
                     </div>
 
                     <!-- Submit -->
@@ -588,9 +579,13 @@
             </div>
 
             <!-- Real-time Donatur -->
-            <div class="recent-donors-card" style="margin-top: 2rem; background: linear-gradient(145deg, #ffffff, #f8fafc); border-radius: 1.5rem; padding: 1.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.05);">
-                <h3 style="font-size: 1.125rem; font-weight: 800; color: #1e293b; margin-bottom: 1rem; text-align: center;">💕 Donatur Terbaru</h3>
-                <div class="recent-donors-list" id="recent-donors-list" style="display:flex; flex-direction:column; gap:0.75rem; max-height: 300px; overflow-y: auto;">
+            <div class="recent-donors-card"
+                style="margin-top: 2rem; background: linear-gradient(145deg, #ffffff, #f8fafc); border-radius: 1.5rem; padding: 1.5rem; box-shadow: 0 10px 40px rgba(0,0,0,0.05);">
+                <h3
+                    style="font-size: 1.125rem; font-weight: 800; color: #1e293b; margin-bottom: 1rem; text-align: center;">
+                    💕 Donatur Terbaru</h3>
+                <div class="recent-donors-list" id="recent-donors-list"
+                    style="display:flex; flex-direction:column; gap:0.75rem; max-height: 300px; overflow-y: auto;">
                     <div style="text-align:center; padding:1rem; color:#64748b">⏳ Memuat data donatur...</div>
                 </div>
             </div>
@@ -753,88 +748,66 @@
         window.addEventListener('scroll', () => {
             const scrollPos = window.scrollY;
             const heroImg = document.getElementById('hero-img');
-            if(heroImg && scrollPos < 800) {
+            if (heroImg && scrollPos < 800) {
                 heroImg.style.transform = `scale(1.1) translateY(${scrollPos * 0.15}px)`;
             }
         });
 
-        // Load Wilayah.id Data
-        async function loadProvinsi() {
-            try {
-                const res = await fetch('https://wilayah.id/api/provinces.json');
-                const data = await res.json();
-                const sel = document.getElementById('f-prov');
-                data.data.forEach(p => {
-                    sel.add(new Option(p.name, p.code));
-                });
-            } catch(e) { console.error('Gagal load provinsi', e); }
-        }
-        async function loadKota() {
-            const pCode = document.getElementById('f-prov').value;
-            const selK = document.getElementById('f-kota');
-            const selKec = document.getElementById('f-kecamatan');
-            selK.innerHTML = '<option value="">Pilih Kota / Kabupaten...</option>';
-            selKec.innerHTML = '<option value="">Pilih Kecamatan...</option>';
-            selK.disabled = true; selKec.disabled = true;
-            if(!pCode) return;
-            try {
-                const res = await fetch(`https://wilayah.id/api/regencies/${pCode}.json`);
-                const data = await res.json();
-                data.data.forEach(k => selK.add(new Option(k.name, k.code)));
-                selK.disabled = false;
-            } catch(e) { console.error('Gagal load kota', e); }
-        }
-        async function loadKecamatan() {
-            const kCode = document.getElementById('f-kota').value;
-            const selKec = document.getElementById('f-kecamatan');
-            selKec.innerHTML = '<option value="">Pilih Kecamatan...</option>';
-            selKec.disabled = true;
-            if(!kCode) return;
-            try {
-                const res = await fetch(`https://wilayah.id/api/districts/${kCode}.json`);
-                const data = await res.json();
-                data.data.forEach(k => selKec.add(new Option(k.name, k.name))); // Store text directly for kecamatan
-                selKec.disabled = false;
-            } catch(e) { console.error('Gagal load kecamatan', e); }
-        }
-        
-        // Load Real-time Donatur
-        async function loadRecentDonors() {
-            try {
-                // Fetch public recent donations. Add endpoint in server.js or fetch from an existing one if available.
-                const res = await fetch('/api/stats');
-                const data = await res.json();
-                // Since there is no public recent endpoint yet, we will mock it or fetch if we add it to server.js
-            } catch(e){}
-        }
+        // ── Kecamatan Autocomplete ──
+        (function () {
+            const inp = document.getElementById('f-kecamatan');
+            const dd = document.getElementById('kec-dropdown');
+            const hid = document.getElementById('f-kota-hidden');
+            let timer = null;
+            inp.addEventListener('input', function () {
+                const q = this.value.trim();
+                clearTimeout(timer);
+                if (q.length < 3) { dd.style.display = 'none'; return; }
+                timer = setTimeout(async () => {
+                    try {
+                        const r = await fetch('/api/wilayah/search?q=' + encodeURIComponent(q));
+                        const j = await r.json();
+                        if (!j.data || !j.data.length) {
+                            dd.innerHTML = '<div style="padding:0.75rem 1rem;color:#94a3b8;font-size:0.82rem">Tidak ditemukan, coba kata lain</div>';
+                            dd.style.display = 'block'; return;
+                        }
+                        dd.innerHTML = j.data.map(d =>
+                            '<div class="kec-opt" data-kec="' + d.kecamatan + '" data-kota="' + d.kota + '" style="padding:0.6rem 1rem;cursor:pointer;font-size:0.85rem;border-bottom:1px solid #f1f5f9;transition:background 0.15s"><strong>' + d.kecamatan + '</strong><span style="color:#94a3b8;font-size:0.75rem;margin-left:0.5rem">' + d.kota + '</span></div>'
+                        ).join('');
+                        dd.style.display = 'block';
+                        dd.querySelectorAll('.kec-opt').forEach(el => {
+                            el.onmouseenter = () => el.style.background = '#f8fafc';
+                            el.onmouseleave = () => el.style.background = '#fff';
+                            el.onclick = () => { inp.value = el.dataset.kec; hid.value = el.dataset.kota; dd.style.display = 'none'; };
+                        });
+                    } catch (e) { dd.style.display = 'none'; }
+                }, 300);
+            });
+            document.addEventListener('click', e => { if (!inp.contains(e.target) && !dd.contains(e.target)) dd.style.display = 'none'; });
+        })();
 
+        // ── Recent Donatur ──
         window.addEventListener('DOMContentLoaded', () => {
-            loadProvinsi();
-            
-            // Public recent donatur implementation
-            fetch('/api/stats/recent').then(r=>r.json()).then(data => {
+            fetch('/api/stats/recent').then(r => r.json()).then(data => {
                 const list = document.getElementById('recent-donors-list');
-                if(data && data.success && data.recent.length > 0) {
+                if (data && data.success && data.recent.length > 0) {
                     list.innerHTML = data.recent.map(d => {
                         let name = d.nama;
-                        if(name.length > 3) name = name.substring(0, Math.ceil(name.length/2)) + '***';
+                        if (name.length > 3) name = name.substring(0, Math.ceil(name.length / 2)) + '***';
                         const rp = 'Rp ' + Number(d.jumlah).toLocaleString('id-ID');
-                        const doa = d.doa_catatan ? `<p style="font-size:0.75rem; color:#64748b; font-style:italic; margin-top:0.25rem;">"${d.doa_catatan}"</p>` : '';
-                        return `
-                        <div style="background:#fff; border:1px solid #f1f5f9; border-radius:0.75rem; padding:0.75rem; box-shadow:0 2px 10px rgba(0,0,0,0.02)">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-weight:700; color:#0f172a; font-size:0.875rem;">${name}</span>
-                                <span style="font-weight:800; color:#b5179e; font-size:0.875rem;">${rp}</span>
-                            </div>
-                            <div style="font-size:0.7rem; color:#94a3b8; margin-top:0.125rem;">${new Date(d.created_at).toLocaleString('id-ID')}</div>
-                            ${doa}
-                        </div>`;
+                        const doa = d.doa_catatan ? '<p style="font-size:0.75rem;color:#64748b;font-style:italic;margin-top:0.25rem">"' + d.doa_catatan + '"</p>' : '';
+                        return '<div style="background:#fff;border:1px solid #f1f5f9;border-radius:0.75rem;padding:0.75rem;box-shadow:0 2px 10px rgba(0,0,0,0.02)">'
+                            + '<div style="display:flex;justify-content:space-between;align-items:center">'
+                            + '<span style="font-weight:700;color:#0f172a;font-size:0.875rem">' + name + '</span>'
+                            + '<span style="font-weight:800;color:#b5179e;font-size:0.875rem">' + rp + '</span></div>'
+                            + '<div style="font-size:0.7rem;color:#94a3b8;margin-top:0.125rem">' + new Date(d.created_at).toLocaleString('id-ID') + '</div>'
+                            + doa + '</div>';
                     }).join('');
                 } else {
-                    list.innerHTML = '<div style="text-align:center; padding:1rem; color:#64748b">Belum ada donatur terbaru.</div>';
+                    list.innerHTML = '<div style="text-align:center;padding:1rem;color:#64748b">Belum ada donatur terbaru.</div>';
                 }
-            }).catch(e => {
-                document.getElementById('recent-donors-list').innerHTML = '<div style="text-align:center; padding:1rem; color:#64748b">Gagal memuat data donatur.</div>';
+            }).catch(() => {
+                document.getElementById('recent-donors-list').innerHTML = '<div style="text-align:center;padding:1rem;color:#64748b">Gagal memuat data donatur.</div>';
             });
         });
     </script>

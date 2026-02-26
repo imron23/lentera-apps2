@@ -1262,6 +1262,8 @@
                     <button class="nav-item active" onclick="switchTab('dashboard')">📊 Dashboard</button>
                     <button class="nav-item" onclick="switchTab('leads')">👥 Data Leads</button>
                     <button class="nav-item" onclick="switchTab('donatur')">💰 Data Donatur</button>
+                    <button class="nav-item" onclick="switchTab('rotator')">📱 WA Rotator</button>
+                    <button class="nav-item" onclick="switchTab('settings')">⚙️ Settings</button>
                     <button class="nav-item" onclick="switchTab('pages')">📄 Pages</button>
                 </nav>
                 <div style="margin-top:auto">
@@ -1463,6 +1465,63 @@
                         </div>
                     </div>
                 </div><!-- end tab-pages-->
+
+                <!-- Tab: WA Rotator -->
+                <div class="tab-panel" id="tab-rotator">
+                    <h2 style="font-size:1rem;font-weight:800;margin-bottom:1rem">📱 WA Rotator — Customer Service</h2>
+                    <div class="chart-card" style="margin-bottom:1rem">
+                        <p class="chart-title">➕ Tambah CS Baru</p>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 80px;gap:.5rem;margin-top:.5rem">
+                            <input id="new-cs-name" class="field-inp" placeholder="Nama CS">
+                            <input id="new-cs-wa" class="field-inp" placeholder="No WA (628xxx)">
+                            <input id="new-cs-weight" class="field-inp" type="number" placeholder="%" value="50"
+                                style="width:70px">
+                        </div>
+                        <button onclick="addCS()"
+                            style="margin-top:.5rem;padding:.5rem 1.5rem;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;border:none;border-radius:.5rem;font-weight:700;cursor:pointer;font-size:.8rem">Tambah
+                            CS</button>
+                    </div>
+                    <div id="rotator-list"></div>
+
+                    <div class="chart-card" style="margin-top:1rem">
+                        <p class="chart-title">📊 Performa CS</p>
+                        <div id="cs-perf-list" style="margin-top:.5rem"></div>
+                    </div>
+                </div><!-- end tab-rotator -->
+
+                <!-- Tab: Settings -->
+                <div class="tab-panel" id="tab-settings">
+                    <h2 style="font-size:1rem;font-weight:800;margin-bottom:1rem">⚙️ Settings — Tracking & Config</h2>
+                    <div class="chart-card" style="margin-bottom:1rem">
+                        <p class="chart-title">📈 Tracking Pixels</p>
+                        <div style="margin-top:.5rem;display:grid;gap:.5rem">
+                            <div class="set-row"><span class="set-label">GA4 ID</span><input id="set-ga"
+                                    class="field-inp" style="flex:1" placeholder="G-XXXXXXXXXX"></div>
+                            <div class="set-row"><span class="set-label">Meta Pixel ID</span><input id="set-pixel"
+                                    class="field-inp" style="flex:1" placeholder="1234567890"></div>
+                            <div class="set-row"><span class="set-label">TikTok Pixel ID</span><input id="set-tiktok"
+                                    class="field-inp" style="flex:1" placeholder="XXXXX"></div>
+                        </div>
+                    </div>
+                    <div class="chart-card" style="margin-bottom:1rem">
+                        <p class="chart-title">🎯 Target & Seed Data</p>
+                        <div style="margin-top:.5rem;display:grid;gap:.5rem">
+                            <div class="set-row"><span class="set-label">Target Donasi (Rp)</span><input id="set-target"
+                                    class="field-inp" style="flex:1" type="number"></div>
+                            <div class="set-row"><span class="set-label">Seed Donatur</span><input id="set-seeddon"
+                                    class="field-inp" style="flex:1" type="number"></div>
+                            <div class="set-row"><span class="set-label">Seed Mushaf</span><input id="set-seedmsh"
+                                    class="field-inp" style="flex:1" type="number"></div>
+                            <div class="set-row"><span class="set-label">Seed Rupiah</span><input id="set-seedrp"
+                                    class="field-inp" style="flex:1" type="number"></div>
+                        </div>
+                    </div>
+                    <button onclick="saveSettings()"
+                        style="padding:.6rem 2rem;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;border-radius:.5rem;font-weight:700;cursor:pointer;font-size:.85rem">💾
+                        Simpan Settings</button>
+                    <p id="settings-msg" style="font-size:.75rem;color:#4ade80;margin-top:.5rem"></p>
+                </div><!-- end tab-settings -->
+
         </div>
         </main>
     </div>
@@ -1508,7 +1567,7 @@
             if (window.CChart2) window.CChart2.update();
             if (window.CChart3) window.CChart3.update();
         }
-        function showBoard() { document.getElementById('login-screen').style.display = 'none'; document.getElementById('board').style.display = 'block'; loadData(); loadAnalytics(); renderPages(); }
+        function showBoard() { document.getElementById('login-screen').style.display = 'none'; document.getElementById('board').style.display = 'block'; loadData(); loadAnalytics(); renderPages(); loadRotator(); loadSettings(); }
 
         // ── Tabs ──
         function switchTab(tab) {
@@ -1846,6 +1905,109 @@
 
         let ntTimer;
         function showNotif(msg, type = 'ok') { const el = document.getElementById('notif'); el.textContent = msg; el.className = `notif ${type} show`; clearTimeout(ntTimer); ntTimer = setTimeout(() => el.classList.remove('show'), 3000); }
+
+        // ── WA Rotator CRUD ──
+        async function loadRotator() {
+            try {
+                const r = await fetch(API + '/api/admin/cs-rotator', { headers: { 'X-Admin-Key': KEY } });
+                const j = await r.json();
+                if (!j.success) return;
+                const el = document.getElementById('rotator-list');
+                el.innerHTML = j.data.map(cs => `
+                    <div class="chart-card" style="margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+                        <span style="font-size:1.2rem">${cs.is_active ? '🟢' : '🔴'}</span>
+                        <div style="flex:1;min-width:120px">
+                            <p style="font-weight:700;font-size:.85rem">${cs.cs_name}</p>
+                            <p style="font-size:.72rem;color:var(--text-muted)">${cs.wa_number}</p>
+                        </div>
+                        <span style="background:rgba(99,102,241,.12);color:#818cf8;padding:.15rem .5rem;border-radius:9999px;font-size:.7rem;font-weight:800">${cs.weight_percentage}%</span>
+                        <button onclick="toggleCS(${cs.id},${!cs.is_active})" style="padding:.3rem .6rem;font-size:.7rem;border:none;border-radius:.4rem;cursor:pointer;background:${cs.is_active ? 'rgba(251,191,36,.12)' : 'rgba(34,197,94,.12)'};color:${cs.is_active ? '#fbbf24' : '#22c55e'};font-weight:700">${cs.is_active ? 'Nonaktifkan' : 'Aktifkan'}</button>
+                        <button onclick="deleteCS(${cs.id})" style="padding:.3rem .6rem;font-size:.7rem;border:none;border-radius:.4rem;cursor:pointer;background:rgba(239,68,68,.12);color:#ef4444;font-weight:700">Hapus</button>
+                    </div>
+                `).join('');
+                loadCSPerf();
+            } catch (e) { console.error('loadRotator', e); }
+        }
+
+        async function addCS() {
+            const name = document.getElementById('new-cs-name').value.trim();
+            const wa = document.getElementById('new-cs-wa').value.trim();
+            const weight = parseInt(document.getElementById('new-cs-weight').value) || 50;
+            if (!name || !wa) { showNotif('Isi nama dan no WA', 'err'); return; }
+            try {
+                const r = await fetch(API + '/api/admin/cs-rotator', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Admin-Key': KEY }, body: JSON.stringify({ cs_name: name, wa_number: wa, weight_percentage: weight }) });
+                const j = await r.json();
+                if (j.success) { showNotif('CS ditambahkan!'); document.getElementById('new-cs-name').value = ''; document.getElementById('new-cs-wa').value = ''; loadRotator(); }
+                else showNotif(j.message, 'err');
+            } catch (e) { showNotif('Error: ' + e.message, 'err'); }
+        }
+
+        async function toggleCS(id, active) {
+            try {
+                await fetch(API + '/api/admin/cs-rotator/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-Admin-Key': KEY }, body: JSON.stringify({ is_active: active }) });
+                loadRotator();
+            } catch (e) { showNotif('Error', 'err'); }
+        }
+
+        async function deleteCS(id) {
+            if (!confirm('Hapus CS ini?')) return;
+            try {
+                await fetch(API + '/api/admin/cs-rotator/' + id, { method: 'DELETE', headers: { 'X-Admin-Key': KEY } });
+                showNotif('CS dihapus'); loadRotator();
+            } catch (e) { showNotif('Error', 'err'); }
+        }
+
+        async function loadCSPerf() {
+            try {
+                const r = await fetch(API + '/api/admin/cs-analytics', { headers: { 'X-Admin-Key': KEY } });
+                const j = await r.json();
+                if (!j.success) return;
+                const el = document.getElementById('cs-perf-list');
+                if (!j.performance.length) { el.innerHTML = '<p style="color:var(--text-muted);font-size:.8rem">Belum ada data</p>'; return; }
+                el.innerHTML = j.performance.map(cs => `
+                    <div style="display:flex;align-items:center;gap:.5rem;padding:.5rem 0;border-bottom:1px solid var(--border-color)">
+                        <span style="font-weight:700;font-size:.82rem;flex:1">${cs.cs_name}</span>
+                        <span style="font-size:.72rem;background:rgba(99,102,241,.1);color:#818cf8;padding:.15rem .4rem;border-radius:.3rem">${cs.total_leads} leads</span>
+                        <span style="font-size:.72rem;background:rgba(34,197,94,.1);color:#22c55e;padding:.15rem .4rem;border-radius:.3rem">${cs.total_converted} selesai</span>
+                        <span style="font-size:.72rem;background:rgba(251,191,36,.1);color:#fbbf24;padding:.15rem .4rem;border-radius:.3rem">${cs.total_pending} pending</span>
+                    </div>`).join('');
+            } catch (e) { console.error('loadCSPerf', e); }
+        }
+
+        // ── Settings ──
+        async function loadSettings() {
+            try {
+                const r = await fetch(API + '/api/admin/settings', { headers: { 'X-Admin-Key': KEY } });
+                const j = await r.json();
+                if (!j.success) return;
+                const s = j.settings;
+                document.getElementById('set-ga').value = s.GA_MEASUREMENT_ID || '';
+                document.getElementById('set-pixel').value = s.META_PIXEL_ID || '';
+                document.getElementById('set-tiktok').value = s.TIKTOK_PIXEL_ID || '';
+                document.getElementById('set-target').value = s.TARGET_DONASI || '';
+                document.getElementById('set-seeddon').value = s.SEED_DONATUR || '';
+                document.getElementById('set-seedmsh').value = s.SEED_MUSHAF || '';
+                document.getElementById('set-seedrp').value = s.SEED_RUPIAH || '';
+            } catch (e) { console.error('loadSettings', e); }
+        }
+
+        async function saveSettings() {
+            const body = {
+                GA_MEASUREMENT_ID: document.getElementById('set-ga').value.trim(),
+                META_PIXEL_ID: document.getElementById('set-pixel').value.trim(),
+                TIKTOK_PIXEL_ID: document.getElementById('set-tiktok').value.trim(),
+                TARGET_DONASI: document.getElementById('set-target').value.trim(),
+                SEED_DONATUR: document.getElementById('set-seeddon').value.trim(),
+                SEED_MUSHAF: document.getElementById('set-seedmsh').value.trim(),
+                SEED_RUPIAH: document.getElementById('set-seedrp').value.trim(),
+            };
+            try {
+                const r = await fetch(API + '/api/admin/settings', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'X-Admin-Key': KEY }, body: JSON.stringify(body) });
+                const j = await r.json();
+                if (j.success) { showNotif('Settings tersimpan! (berlaku sampai restart)'); document.getElementById('settings-msg').textContent = '✅ Tersimpan ' + new Date().toLocaleTimeString('id-ID'); }
+                else showNotif(j.message, 'err');
+            } catch (e) { showNotif('Error: ' + e.message, 'err'); }
+        }
     </script>
 </body>
 

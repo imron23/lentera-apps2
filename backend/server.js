@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const db = require('./db');
 const donasi = require('./routes/donasi');
+const wilayah = require('./routes/wilayah');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -335,8 +336,55 @@ app.delete('/api/admin/donations/:id', requireAdmin, async (req, res) => {
     } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 });
 
+// ── Admin: Settings (tracking pixels) ───────────────────────────
+app.get('/api/admin/settings', requireAdmin, (_req, res) => {
+    res.json({
+        success: true,
+        settings: {
+            GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID || '',
+            META_PIXEL_ID: process.env.META_PIXEL_ID || '',
+            TIKTOK_PIXEL_ID: process.env.TIKTOK_PIXEL_ID || '',
+            TARGET_DONASI: process.env.TARGET_DONASI || '50000000',
+            SEED_DONATUR: process.env.SEED_DONATUR || '247',
+            SEED_MUSHAF: process.env.SEED_MUSHAF || '6550',
+            SEED_RUPIAH: process.env.SEED_RUPIAH || '32500000'
+        }
+    });
+});
+
+app.patch('/api/admin/settings', requireAdmin, (req, res) => {
+    const allowed = ['GA_MEASUREMENT_ID', 'META_PIXEL_ID', 'TIKTOK_PIXEL_ID', 'TARGET_DONASI', 'SEED_DONATUR', 'SEED_MUSHAF', 'SEED_RUPIAH'];
+    const updated = {};
+    for (const key of allowed) {
+        if (req.body[key] !== undefined) {
+            process.env[key] = String(req.body[key]);
+            updated[key] = process.env[key];
+        }
+    }
+    res.json({ success: true, updated });
+});
+
+// ── Admin: CS Rotator PATCH ─────────────────────────────────────
+app.patch('/api/admin/cs-rotator/:id', requireAdmin, async (req, res) => {
+    try {
+        const { cs_name, wa_number, weight_percentage, is_active } = req.body;
+        const sets = [], vals = [];
+        let idx = 1;
+        if (cs_name !== undefined) { sets.push(`cs_name=$${idx++}`); vals.push(cs_name); }
+        if (wa_number !== undefined) { sets.push(`wa_number=$${idx++}`); vals.push(wa_number.replace(/\D/g, '')); }
+        if (weight_percentage !== undefined) { sets.push(`weight_percentage=$${idx++}`); vals.push(parseInt(weight_percentage)); }
+        if (is_active !== undefined) { sets.push(`is_active=$${idx++}`); vals.push(Boolean(is_active)); }
+        if (!sets.length) return res.status(400).json({ success: false, message: 'No data' });
+        vals.push(parseInt(req.params.id));
+        const r = await db.query(`UPDATE cs_rotator SET ${sets.join(', ')} WHERE id=$${idx} RETURNING *`, vals);
+        if (!r.rows.length) return res.status(404).json({ success: false, message: 'Not found' });
+        res.json({ success: true, data: r.rows[0] });
+    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+});
+
 // ── Routes ──────────────────────────────────────────────────────
 app.use('/api/donasi', donasi);
+app.use('/api/wilayah', wilayah);
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
 app.use((_req, res) => res.status(404).json({ success: false, message: 'Not found' }));
 
