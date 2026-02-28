@@ -2362,22 +2362,53 @@ button {
 }
 
 /* ── Paket Note Box (bawah paket cards) ─────────────────────────── */
-.paket-note-box {
+details.paket-note-box {
     background: linear-gradient(135deg, #fdf4ff, #eff6ff);
     border: 1px solid #e9d5ff;
     border-left: 4px solid #7209b7;
     border-radius: .875rem;
-    padding: 1rem 1.25rem;
-    margin-top: 1.5rem
+    padding: 0;
+    /* padding dipindah ke summary & content */
+    margin-top: 1.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
-.paket-note-title {
+summary.paket-note-title {
     font-size: .8rem;
     font-weight: 800;
     color: #7209b7;
-    margin-bottom: .375rem;
+    padding: 1rem 1.25rem;
     text-transform: uppercase;
-    letter-spacing: .05em
+    letter-spacing: .05em;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    list-style: none;
+    /* Hilangkan default arrow di Safari/Chrome */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+summary.paket-note-title::-webkit-details-marker {
+    display: none;
+}
+
+summary.paket-note-title::after {
+    content: '▼';
+    font-size: 0.75rem;
+    transition: transform 0.3s ease;
+}
+
+details.paket-note-box[open] summary.paket-note-title::after {
+    transform: rotate(180deg);
+}
+
+.paket-note-content {
+    padding: 0 1.25rem 1rem 1.25rem;
+    border-top: 1px dashed rgba(114, 9, 183, 0.15);
+    margin-top: -0.25rem;
 }
 
 .paket-note-text {

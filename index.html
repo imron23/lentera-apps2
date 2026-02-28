@@ -45,7 +45,7 @@
         !function (f, b, e, v, n, t, s) {
             if (f.fbq) return; n = f.fbq = function () {
                 n.callMethod ?
-                n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
             };
             if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
             n.queue = []; t = b.createElement(e); t.async = !0;
@@ -373,13 +373,16 @@
                 </div>
             </div>
 
-            <div class="paket-note-box">
-                <p class="paket-note-title">ℹ️ Informasi Penting</p>
-                <p class="paket-note-text">*Harga tersebut merupakan <strong>acuan wakaf Al-Qur'an</strong>, sudah
-                    termasuk operasional pendistribusian wakaf Al-Qur'an dan infak Yayasan. Anda dapat berpartisipasi
-                    dengan <strong>nominal berapapun</strong> karena akan diakumulasikan dalam pembelian wakaf
-                    Al-Qur'an.</p>
-            </div>
+            <details class="paket-note-box">
+                <summary class="paket-note-title"><span>ℹ️ Informasi Penting</span></summary>
+                <div class="paket-note-content">
+                    <p class="paket-note-text">*Harga tersebut merupakan <strong>acuan wakaf Al-Qur'an</strong>, sudah
+                        termasuk operasional pendistribusian wakaf Al-Qur'an dan infak Yayasan. Anda dapat
+                        berpartisipasi
+                        dengan <strong>nominal berapapun</strong> karena akan diakumulasikan dalam pembelian wakaf
+                        Al-Qur'an.</p>
+                </div>
+            </details>
         </div>
     </section>
 
