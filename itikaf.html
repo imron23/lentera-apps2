@@ -70,6 +70,262 @@
 
     <!-- Stylesheet -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- ── Itikaf Dark Theme Override ── -->
+    <style>
+        :root {
+            --bg-dark: #060415;
+            --bg-card: #0f172a;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-dark: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--text-light);
+        }
+
+        .navbar {
+            background: linear-gradient(to bottom, rgba(6, 4, 21, 0.9), transparent);
+        }
+
+        .navbar.scrolled {
+            background: rgba(6, 4, 21, 0.95);
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        .brand-name {
+            color: var(--text-light);
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+        }
+
+        .nav-links a:hover {
+            color: var(--gold-light);
+        }
+
+        .btn-cta {
+            border: 1px solid var(--gold-light);
+            color: var(--gold-light);
+        }
+
+        .section {
+            background: var(--bg-dark) !important;
+        }
+
+        .section-title {
+            color: var(--text-light);
+        }
+
+        .section-sub {
+            color: var(--text-muted);
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dark);
+            color: var(--text-muted);
+        }
+
+        .feature-title {
+            color: var(--text-light);
+        }
+
+        .testi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dark);
+        }
+
+        .testi-name {
+            color: var(--text-light);
+        }
+
+        .testi-quote {
+            color: var(--text-muted);
+        }
+
+        .gallery-section {
+            background: var(--bg-dark);
+        }
+
+        .divider {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            height: 1px;
+        }
+
+        .paket-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-dark);
+        }
+
+        .paket-card:hover {
+            border-color: var(--gold-light);
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.1);
+        }
+
+        .paket-title {
+            color: var(--text-light);
+        }
+
+        details.paket-note-box {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-dark);
+            border-left: 4px solid var(--gold-light);
+        }
+
+        summary.paket-note-title {
+            color: var(--gold-light);
+        }
+
+        .paket-note-text {
+            color: var(--text-muted);
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, #060415, #1e1b4b);
+        }
+
+        .form-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-dark);
+        }
+
+        .form-brand-name {
+            color: var(--text-light);
+        }
+
+        .mini-paket-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-dark);
+        }
+
+        .mini-paket-label {
+            color: var(--text-muted);
+        }
+
+        .mini-paket-btn.active {
+            background: rgba(251, 191, 36, 0.1);
+            border-color: var(--gold-light);
+        }
+
+        .mini-paket-btn.active .mini-paket-label {
+            color: var(--gold-light);
+        }
+
+        .field-label {
+            color: var(--text-light);
+        }
+
+        .field-input {
+            background: var(--bg-dark);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-light);
+        }
+
+        .field-input:focus {
+            border-color: var(--gold-light);
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15);
+        }
+
+        .wa-wrap {
+            background: var(--bg-dark);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .wa-prefix {
+            color: var(--text-muted);
+            border-right: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .wa-wrap:focus-within {
+            border-color: var(--gold-light);
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.15);
+        }
+
+        .chip-btn {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-dark);
+            color: var(--text-muted);
+        }
+
+        .chip-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .chip-btn.active {
+            background: var(--gold-light);
+            color: var(--bg-dark);
+            border-color: var(--gold-light);
+        }
+
+        .custom-input-wrap .amount-wrap {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-dark);
+        }
+
+        .custom-input-wrap .amount-wrap:focus-within {
+            border-color: var(--gold-light);
+        }
+
+        .form-trust-bar {
+            border-top: 1px solid var(--border-dark);
+        }
+
+        .form-disclaimer {
+            background: rgba(255, 255, 255, 0.05) !important;
+            border-color: var(--border-dark) !important;
+        }
+
+        .form-disclaimer-title {
+            color: var(--gold-light) !important;
+        }
+
+        .form-disclaimer-content p {
+            color: var(--text-muted) !important;
+        }
+
+        .recent-donors-card {
+            background: rgba(15, 23, 42, 0.5) !important;
+            border: 1px solid var(--border-dark);
+            box-shadow: none !important;
+        }
+
+        .recent-donors-card h3 {
+            color: var(--gold-light) !important;
+        }
+
+        .video-section {
+            background: var(--bg-dark);
+            border-top: 1px solid var(--border-dark);
+        }
+
+        .testi-section {
+            background: linear-gradient(180deg, var(--bg-dark) 0%, rgba(30, 27, 75, 0.8) 100%);
+        }
+
+        /* Dialog Autocomplete styling override */
+        #kec-dropdown {
+            background: var(--bg-card) !important;
+            border-color: var(--border-dark) !important;
+        }
+
+        .kec-item {
+            color: var(--text-light);
+        }
+
+        .kec-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .kec-item-sub {
+            color: var(--text-muted);
+        }
+    </style>
 </head>
 
 <body>
