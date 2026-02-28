@@ -2422,22 +2422,61 @@ details.paket-note-box[open] summary.paket-note-title::after {
 }
 
 /* ── Form Disclaimer (bawah tombol submit) ───────────────────────── */
-.form-disclaimer {
-    display: flex;
-    align-items: flex-start;
-    gap: .625rem;
+details.form-disclaimer {
     background: rgba(245, 243, 255, .6);
     border: 1px solid #e9d5ff;
     border-radius: .75rem;
+    padding: 0;
+    margin-top: .75rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+summary.form-disclaimer-title {
+    font-size: .78rem;
+    font-weight: 800;
+    color: #7209b7;
     padding: .875rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+    list-style: none;
+    /* Hilangkan default arrow */
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+summary.form-disclaimer-title::-webkit-details-marker {
+    display: none;
+}
+
+summary.form-disclaimer-title span.title-left {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+summary.form-disclaimer-title::after {
+    content: '▼';
+    font-size: 0.75rem;
+    transition: transform 0.3s ease;
+}
+
+details.form-disclaimer[open] summary.form-disclaimer-title::after {
+    transform: rotate(180deg);
+}
+
+.form-disclaimer-content {
+    padding: 0 1rem .875rem 1rem;
+    border-top: 1px dashed rgba(114, 9, 183, 0.15);
+    margin-top: -0.25rem;
+}
+
+.form-disclaimer-content p {
     font-size: .78rem;
     color: #6b7280;
     line-height: 1.6;
-    margin-top: .75rem
-}
-
-.disclaimer-icon {
-    font-size: 1rem;
-    flex-shrink: 0;
-    margin-top: .1rem
 }
