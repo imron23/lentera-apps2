@@ -193,6 +193,67 @@
             position: sticky;
             top: 0;
             height: 100vh;
+            transition: width 0.3s ease, padding 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 80px;
+            padding: 1.5rem 0.5rem;
+            align-items: center;
+        }
+
+        .sidebar.collapsed .brand-text,
+        .sidebar.collapsed .badge-live-text,
+        .sidebar.collapsed .nav-text {
+            display: none;
+        }
+
+        .sidebar.collapsed .brand {
+            align-items: center !important;
+        }
+
+        .sidebar.collapsed .badge-live {
+            padding: 0.2rem;
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 0.875rem 0;
+        }
+
+        .sidebar.collapsed .logout-btn {
+            padding: 0.875rem 0 !important;
+        }
+
+        .sidebar.collapsed .theme-toggle {
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .sidebar-toggle {
+            position: absolute;
+            right: -12px;
+            top: 3rem;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 50;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-size: 0.7rem;
+            transition: transform 0.2s;
+        }
+
+        .sidebar-toggle:hover {
+            transform: scale(1.1);
         }
 
         .main-content {
@@ -211,6 +272,14 @@
             color: var(--text-main);
             align-self: flex-start;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .sidebar.collapsed .theme-toggle {
+            align-self: center;
+            padding: 0.5rem;
         }
 
         .theme-toggle:hover {
@@ -341,7 +410,11 @@
             font-size: .72rem;
             cursor: pointer;
             font-family: inherit;
-            transition: all .2s
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
         }
 
         .logout-btn:hover {
@@ -367,7 +440,7 @@
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 1rem;
-            padding: .875rem 1rem;
+            padding: .75rem .875rem;
             position: relative;
             overflow: hidden;
             transition: all .25s
@@ -376,22 +449,22 @@
         .sbox:hover {
             border-color: rgba(114, 9, 183, .3);
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, .3)
+            box-shadow: 0 6px 16px rgba(0, 0, 0, .05)
         }
 
         .sbox-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: .5rem
+            margin-bottom: .4rem
         }
 
         .sbox-ico {
-            font-size: 1.1rem
+            font-size: 1rem
         }
 
         .sbox-badge {
-            font-size: .6rem;
+            font-size: .55rem;
             font-weight: 700;
             padding: .15rem .4rem;
             border-radius: 9999px;
@@ -410,17 +483,17 @@
         }
 
         .sbox-val {
-            font-size: 1.5rem;
+            font-size: 1.15rem;
             font-weight: 900;
-            color: #f1f5f9;
+            color: var(--text-main);
             line-height: 1;
-            margin-bottom: .125rem
+            margin-bottom: .15rem
         }
 
         .sbox-lbl {
-            font-size: .65rem;
+            font-size: .6rem;
             font-weight: 600;
-            color: #475569;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: .06em
         }
@@ -456,13 +529,13 @@
         }
 
         .crm-dot {
-            width: 2.5rem;
-            height: 2.5rem;
-            border-radius: .75rem;
+            width: 2rem;
+            height: 2rem;
+            border-radius: .625rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: .85rem;
             flex-shrink: 0
         }
 
@@ -483,14 +556,15 @@
         }
 
         .crm-num {
-            font-size: 1.25rem;
+            font-size: 1.05rem;
             font-weight: 900;
-            line-height: 1
+            line-height: 1;
+            color: var(--text-main);
         }
 
         .crm-lbl {
-            font-size: .65rem;
-            color: #64748b;
+            font-size: .6rem;
+            color: var(--text-muted);
             font-weight: 600
         }
 
@@ -638,12 +712,12 @@
             text-transform: uppercase;
             letter-spacing: .06em;
             white-space: nowrap;
-            border-bottom: 1px solid rgba(255, 255, 255, .04)
+            border-bottom: 1px solid var(--border-color)
         }
 
         td {
             padding: .5rem .625rem;
-            border-bottom: 1px solid rgba(255, 255, 255, .03);
+            border-bottom: 1px solid var(--border-color);
             vertical-align: middle
         }
 
@@ -726,7 +800,7 @@
 
         .act-btn {
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, .06);
+            border: 1px solid var(--border-color);
             color: var(--text-muted);
             padding: .15rem .4rem;
             border-radius: .35rem;
@@ -826,11 +900,11 @@
             justify-content: space-between;
             padding: .3rem 0;
             font-size: .78rem;
-            border-bottom: 1px solid rgba(255, 255, 255, .03)
+            border-bottom: 1px solid var(--border-color)
         }
 
         .info-val {
-            color: #f1f5f9;
+            color: var(--text-main);
             font-weight: 700
         }
 
@@ -862,7 +936,7 @@
 
         .wa-tpl {
             padding: .25rem .625rem;
-            border: 1px solid rgba(255, 255, 255, .06);
+            border: 1px solid var(--border-color);
             border-radius: 9999px;
             background: transparent;
             color: var(--text-muted);
@@ -880,7 +954,7 @@
 
         .modal-foot {
             padding: .875rem 1.375rem;
-            border-top: 1px solid rgba(255, 255, 255, .05);
+            border-top: 1px solid var(--border-color);
             display: flex;
             gap: .5rem;
             justify-content: flex-end
@@ -964,7 +1038,7 @@
             align-items: center;
             gap: .625rem;
             padding: .5rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, .03)
+            border-bottom: 1px solid var(--border-color)
         }
 
         .activity-item:last-child {
@@ -1026,6 +1100,42 @@
         }
 
         @media(max-width:768px) {
+            .sidebar-toggle {
+                display: none;
+            }
+
+            .app-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100% !important;
+                height: auto;
+                position: relative;
+                padding: 1rem !important;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                align-items: stretch !important;
+            }
+
+            .sidebar .brand-text {
+                display: block !important;
+            }
+
+            .sidebar .badge-live-text,
+            .sidebar .nav-text {
+                display: inline !important;
+            }
+
+            .nav-menu {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .nav-item {
+                white-space: nowrap;
+            }
 
             .stats-row,
             .crm-row {
@@ -1041,6 +1151,10 @@
             .stats-row {
                 grid-template-columns: 1fr 1fr
             }
+
+            .crm-row {
+                grid-template-columns: 1fr 1fr
+            }
         }
 
         /* ── Tabs ── */
@@ -1049,7 +1163,7 @@
             gap: .25rem;
             padding: .5rem 1.5rem 0;
             background: var(--sidebar-bg);
-            border-bottom: 1px solid rgba(255, 255, 255, .04)
+            border-bottom: 1px solid var(--border-color)
         }
 
         .tab-btn {
@@ -1245,30 +1359,41 @@
     <div class="board" id="board">
         <div class="app-container">
             <!-- Sidebar -->
-            <aside class="sidebar">
+            <aside class="sidebar" id="sidebar">
+                <button class="sidebar-toggle" onclick="toggleSidebar()">⬅️</button>
                 <div class="brand" style="flex-direction: column; align-items:flex-start; margin-bottom: 0.5rem;">
-                    <div style="display:flex; align-items:center; gap:0.5rem">
+                    <div style="display:flex; align-items:center; gap:0.5rem; width:100%;">
                         <span class="brand-icon">📖</span>
-                        <div>
+                        <div class="brand-text">
                             <p class="brand-name">Imron Panel</p>
                             <p class="brand-sub">CRM LDI</p>
                         </div>
                     </div>
                     <div class="badge-live" style="margin-top:0.75rem; display:inline-flex"><span
-                            class="dot-live"></span>LIVE</div>
+                            class="dot-live"></span><span class="badge-live-text"
+                            style="margin-left:0.3rem;">LIVE</span></div>
                 </div>
-                <button class="theme-toggle" onclick="toggleTheme()" id="btn-theme">🌓 Mode Gelap</button>
+                <button class="theme-toggle" onclick="toggleTheme()" id="btn-theme" title="Mode"><span class="nav-ico"
+                        id="theme-ico">🌓</span> <span class="nav-text" id="theme-text"
+                        style="font-size:0.875rem; font-weight:700;">Mode Gelap</span></button>
                 <nav class="nav-menu">
-                    <button class="nav-item active" onclick="switchTab('dashboard')">📊 Dashboard</button>
-                    <button class="nav-item" onclick="switchTab('leads')">👥 Data Leads</button>
-                    <button class="nav-item" onclick="switchTab('donatur')">💰 Data Donatur</button>
-                    <button class="nav-item" onclick="switchTab('rotator')">📱 WA Rotator</button>
-                    <button class="nav-item" onclick="switchTab('settings')">⚙️ Settings</button>
-                    <button class="nav-item" onclick="switchTab('pages')">📄 Pages</button>
+                    <button class="nav-item active" onclick="switchTab('dashboard')" title="Dashboard"><span
+                            class="nav-ico">📊</span> <span class="nav-text">Dashboard</span></button>
+                    <button class="nav-item" onclick="switchTab('leads')" title="Data Leads"><span
+                            class="nav-ico">👥</span> <span class="nav-text">Data Leads</span></button>
+                    <button class="nav-item" onclick="switchTab('donatur')" title="Data Donatur"><span
+                            class="nav-ico">💰</span> <span class="nav-text">Data Donatur</span></button>
+                    <button class="nav-item" onclick="switchTab('rotator')" title="WA Rotator"><span
+                            class="nav-ico">📱</span> <span class="nav-text">WA Rotator</span></button>
+                    <button class="nav-item" onclick="switchTab('settings')" title="Settings"><span
+                            class="nav-ico">⚙️</span> <span class="nav-text">Settings</span></button>
+                    <button class="nav-item" onclick="switchTab('pages')" title="Pages"><span class="nav-ico">📄</span>
+                        <span class="nav-text">Pages</span></button>
                 </nav>
                 <div style="margin-top:auto">
                     <button class="logout-btn" style="width:100%; border-radius: 0.625rem; padding: 0.875rem 1rem;"
-                        onclick="doLogout()">🚪 Keluar</button>
+                        onclick="doLogout()" title="Keluar"><span class="nav-ico">🚪</span> <span
+                            class="nav-text">Keluar</span></button>
                 </div>
             </aside>
 
@@ -1576,10 +1701,28 @@
         function toggleTheme() {
             document.body.classList.toggle('light-mode');
             const isLight = document.body.classList.contains('light-mode');
-            document.getElementById('btn-theme').textContent = isLight ? '🌘 Mode Gelap' : '☀️ Mode Terang';
+            const ico = document.getElementById('theme-ico');
+            const txt = document.getElementById('theme-text');
+            if (ico && txt) {
+                ico.textContent = isLight ? '🌘' : '☀️';
+                txt.textContent = isLight ? 'Mode Gelap' : 'Mode Terang';
+            } else {
+                document.getElementById('btn-theme').textContent = isLight ? '🌘 Mode Gelap' : '☀️ Mode Terang';
+            }
             if (window.CChart1) window.CChart1.update();
             if (window.CChart2) window.CChart2.update();
             if (window.CChart3) window.CChart3.update();
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            const btn = document.querySelector('.sidebar-toggle');
+            if (sidebar.classList.contains('collapsed')) {
+                btn.textContent = '➡️';
+            } else {
+                btn.textContent = '⬅️';
+            }
         }
         function showBoard() { document.getElementById('login-screen').style.display = 'none'; document.getElementById('board').style.display = 'block'; loadData(); loadAnalytics(); renderPages(); loadRotator(); loadSettings(); }
 
@@ -1780,8 +1923,8 @@
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { display: true, labels: { color: '#64748b', font: { size: 10 }, boxWidth: 12 } } },
                     scales: {
-                        x: { grid: { color: 'rgba(255,255,255,.03)' }, ticks: { color: '#475569', font: { size: 9 } } },
-                        y: { position: 'left', grid: { color: 'rgba(255,255,255,.03)' }, ticks: { color: '#475569', font: { size: 9 }, callback: v => v >= 1e6 ? (v / 1e6).toFixed(1) + 'jt' : v >= 1e3 ? (v / 1e3) + 'rb' : v } },
+                        x: { grid: { color: document.body.classList.contains('light-mode') ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.03)' }, ticks: { color: '#475569', font: { size: 9 } } },
+                        y: { position: 'left', grid: { color: document.body.classList.contains('light-mode') ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.03)' }, ticks: { color: '#475569', font: { size: 9 }, callback: v => v >= 1e6 ? (v / 1e6).toFixed(1) + 'jt' : v >= 1e3 ? (v / 1e3) + 'rb' : v } },
                         y1: { position: 'right', grid: { display: false }, ticks: { color: '#a78bfa', font: { size: 9 } } }
                     }
                 }
@@ -1818,7 +1961,7 @@
                     responsive: true, maintainAspectRatio: false, indexAxis: 'y',
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { color: 'rgba(255,255,255,.03)' }, ticks: { color: '#475569', font: { size: 9 }, callback: v => v >= 1e6 ? (v / 1e6).toFixed(0) + 'jt' : v >= 1e3 ? (v / 1e3) + 'rb' : v } },
+                        x: { grid: { color: document.body.classList.contains('light-mode') ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.03)' }, ticks: { color: '#475569', font: { size: 9 }, callback: v => v >= 1e6 ? (v / 1e6).toFixed(0) + 'jt' : v >= 1e3 ? (v / 1e3) + 'rb' : v } },
                         y: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 9 } } }
                     }
                 }
