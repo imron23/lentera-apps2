@@ -22,9 +22,16 @@
         content="1 Mushaf Al-Qur'an = Rp 80.000. Pahala jariyah layaknya 83 tahun. Wakaf sekarang!">
     <meta name="twitter:image" content="https://ldi.or.id/aset%20foto/wa1.jpeg">
 
-    <!-- Preconnect fonts (speed) -->
+    <!-- ── Performance Optimizations ── -->
+    <!-- Preload critical assets -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="aset%20foto/wa1.jpeg" as="image" fetchpriority="high">
+
+    <!-- Preconnect third-party origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://connect.facebook.net">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Amiri:wght@400;700&display=swap"
         rel="stylesheet">
