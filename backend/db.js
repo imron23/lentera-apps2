@@ -1,8 +1,16 @@
 const { Pool } = require('pg');
 
-const pool = new Pool({
-    connectionString: process.env.PG_URI || 'postgresql://user:password@localhost:5432/munira_crm'
-});
+const poolConfig = process.env.PG_URI
+    ? { connectionString: process.env.PG_URI }
+    : {
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT) || 5432,
+        database: process.env.DB_NAME || 'munira_crm',
+        user: process.env.DB_USER || 'user',
+        password: process.env.DB_PASS || 'password',
+    };
+
+const pool = new Pool(poolConfig);
 
 const initDB = async () => {
     const client = await pool.connect();
