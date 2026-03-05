@@ -1,0 +1,28 @@
+# ── Dependencies (diinstall saat build, bukan dicopy dari host) ──
+node_modules/
+
+# ── Env & secrets ────────────────────────────────────────────────
+.env
+.env.*
+
+# ── OS & IDE ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ── Logs ─────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+
+# ── Dev & build artifacts ────────────────────────────────────────
+*.sh
+patch-*.js
+
+# ── Docs (tidak dibutuhkan di runtime) ───────────────────────────
+README.md
+*.md
+
+# ── Docker meta files ────────────────────────────────────────────
+Dockerfile
+.dockerignore

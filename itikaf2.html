@@ -400,6 +400,16 @@
         .kec-item-sub {
             color: var(--text-muted);
         }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #scalev-overlay {
+            min-height: 600px;
+        }
     </style>
 </head>
 
@@ -880,10 +890,14 @@
                     <span class="live-dot" aria-hidden="true"></span>
                     Malam Ini Terkoneksi
                 </div>
-                <h2 class="form-title" id="form-heading">Jadikan 10 Malam Terakhir Penuh Keberkahan</h2>
+                <h2 class="form-title" id="form-heading"
+                    style="color: #FACC15; text-shadow: 0 0 15px rgba(250, 204, 21, 0.4), 0 2px 4px rgba(0,0,0,0.5);">
+                    Jadikan 10 Malam Terakhir
+                    Penuh Keberkahan</h2>
                 <p class="form-subtitle">Form donasi tervalidasi. Lakukan Amalan Wakaf Anda sekarang sebelum fajar
                     menyingsing.</p>
             </header>
+
 
             <!-- Selected paket pill -->
             <div class="selected-pill" id="paket-summary" role="status" aria-live="polite">
@@ -1052,42 +1066,74 @@
                     </div>
                 </div>
 
-                <!-- 3rd Party Checkout IFrame (hidden by default initially) -->
-                <div id="form-pembayaran-iframe" style="display:none; padding-top: 2rem;">
-                    <iframe id="myiframe" width="100%" frameborder="0"
-                        src="https://kredit-motor-syari-muamalah-syar.myscalev.com/wakafquran"></iframe>
-                    <script>
-                        const iframe = document.getElementById('myiframe');
-                        function resizeIframe(height) { iframe.style.height = height + 'px'; }
-                        function isUrl(string) { try { new URL(string); return true; } catch (_) { return false; } }
-                        function isJSONObject(string) { try { const parsed = JSON.parse(string); return typeof parsed === 'object' && parsed !== null; } catch (e) { return false; } }
-                        function isIframeSameOrigin() { try { const doc = iframe.contentDocument || iframe.contentWindow.document; return true; } catch (e) { return false; } }
-                        window.addEventListener('message', function (e) {
-                            if (e.origin === 'https://kredit-motor-syari-muamalah-syar.myscalev.com') {
-                                if (isUrl(e.data)) { location.href = e.data; }
-                                if (isJSONObject(e.data) && !isIframeSameOrigin()) {
-                                    const message = JSON.parse(e.data);
-                                    if (message.type === 'resize') { resizeIframe(message.height); }
-                                }
-                            }
-                        }, false);
-                        document.addEventListener('DOMContentLoaded', function () {
-                            var observer = new IntersectionObserver(function (entries) {
-                                entries.forEach((entry) => {
-                                    if (entry.isIntersecting) {
-                                        iframe.src = iframe.src;
-                                        observer.disconnect();
-                                    }
-                                });
-                            });
-                            observer.observe(iframe);
-                        });
-                    </script>
-                </div>
-
                 <div class="form-trust-bar">
                     <span>Dana tersalurkan langsung melalui Yayasan Lentera Dakwah Indonesia</span>
                 </div>
+            </div>
+
+            <!-- ── ScaleV Seamless Overlay (menggantikan form setelah submit) ── -->
+            <div id="scalev-overlay" style="
+                display: none;
+                position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+                background: #fff;
+                border-radius: 1.5rem;
+                z-index: 10;
+                flex-direction: column;
+                overflow: hidden;
+            ">
+                <!-- Header strip -->
+                <div style="
+                    background: linear-gradient(135deg, #1e0533 0%, #3b0764 50%, #1e0533 100%);
+                    padding: 1rem 1.25rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    flex-shrink: 0;
+                ">
+                    <img src="logo.png" alt="LDI" width="28" height="28"
+                        style="border-radius:50%; border:2px solid rgba(250,204,21,0.5);">
+                    <div style="flex:1;">
+                        <p style="font-size:0.8rem; font-weight:700; color:#FACC15; margin:0;">Wakaf Al-Qur'an Lailatul
+                            Qadar</p>
+                        <p style="font-size:0.7rem; color:rgba(255,255,255,0.6); margin:0;">Yayasan Lentera Dakwah
+                            Indonesia</p>
+                    </div>
+                    <div id="scalev-amount-badge" style="
+                        background: linear-gradient(135deg,#7c3aed,#b5179e);
+                        color:#fff;
+                        padding:0.3rem 0.75rem;
+                        border-radius:2rem;
+                        font-size:0.8rem;
+                        font-weight:800;
+                    "></div>
+                </div>
+
+                <!-- Loading screen -->
+                <div id="scalev-loading" style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 3rem;
+                    gap: 1rem;
+                    flex: 1;
+                ">
+                    <div style="
+                        width: 48px; height: 48px;
+                        border: 4px solid #f1f5f9;
+                        border-top-color: #7c3aed;
+                        border-radius: 50%;
+                        animation: spin 0.8s linear infinite;
+                    "></div>
+                    <p style="color:#475569; font-size:0.9rem; margin:0;">Menyiapkan halaman pembayaran...</p>
+                    <p id="scalev-loading-name" style="color:#7c3aed; font-size:0.85rem; font-weight:600; margin:0;">
+                    </p>
+                </div>
+
+                <!-- ScaleV iframe -->
+                <iframe id="scalev-iframe" name="scalev-iframe" width="100%" frameborder="0" scrolling="yes"
+                    style="flex:1; min-height:680px; display:none; border:none;" src="about:blank">
+                </iframe>
             </div>
 
             <!-- Real-time Donatur -->
@@ -1254,98 +1300,147 @@
     <!-- JS — deferred for speed -->
     <script src="script.js?v=1447" defer></script>
     <script>
-        // Override the global submitDonasi specifically for itikaf2.html
-        window.submitDonasi = async function () {
-            const nama = (document.getElementById('f-nama')?.value || '').trim();
-            const wa = (document.getElementById('f-wa')?.value || '').trim();
-            const kota = (document.getElementById('f-kota-hidden')?.value || '').trim();
-            const kecamatan = (document.getElementById('f-kecamatan')?.value || '').trim();
-            const jumlah = window.getJumlah ? window.getJumlah() : 0;
-            const ortuCb = document.getElementById('f-ortu-check')?.checked;
-            const ortuNm = (document.getElementById('f-ortu-nama')?.value || '').trim();
-            const doa_catatan = (document.getElementById('f-doa')?.value || '').trim();
+        // Override harus dijalankan SETELAH script.js (defer) selesai
+        // Gunakan window.addEventListener('load') untuk memastikan urutan eksekusi yang benar
+        window.addEventListener('load', function () {
+            // Override the global submitDonasi specifically for itikaf2.html
+            window.submitDonasi = async function () {
+                const nama = (document.getElementById('f-nama')?.value || '').trim();
+                const wa = (document.getElementById('f-wa')?.value || '').trim();
+                const kota = (document.getElementById('f-kota-hidden')?.value || '').trim();
+                const kecamatan = (document.getElementById('f-kecamatan')?.value || '').trim();
+                const jumlah = window.getJumlah ? window.getJumlah() : 0;
+                const ortuCb = document.getElementById('f-ortu-check')?.checked;
+                const ortuNm = (document.getElementById('f-ortu-nama')?.value || '').trim();
+                const doa_catatan = (document.getElementById('f-doa')?.value || '').trim();
 
-            if (!nama) { showAlert('Mohon isi nama lengkap Anda.'); return; }
-            if (!wa || wa.length < 7) { showAlert('Mohon isi nomor WhatsApp yang valid.'); return; }
-            if (!kecamatan) { showAlert('Mohon isi kecamatan / kota Anda.'); return; }
-            if (!jumlah || jumlah < 1000) { showAlert('Pilih nominal donasi atau isi minimal Rp 1.000.'); return; }
+                if (!nama) { showAlert('Mohon isi nama lengkap Anda.'); return; }
+                if (!wa || wa.length < 7) { showAlert('Mohon isi nomor WhatsApp yang valid.'); return; }
+                if (!kecamatan) { showAlert('Mohon isi kecamatan / kota Anda.'); return; }
+                if (!jumlah || jumlah < 1000) { showAlert('Pilih nominal donasi atau isi minimal Rp 1.000.'); return; }
 
-            const qty = selectedQty || Math.round(jumlah / 80000) || 1;
-            const ortu = ortuCb && ortuNm ? ortuNm : null;
+                const qty = selectedQty || Math.round(jumlah / 80000) || 1;
+                const ortu = ortuCb && ortuNm ? ortuNm : null;
 
-            const btn = document.getElementById('btn-submit');
-            const btnText = document.getElementById('btn-submit-text');
-            if (btn) btn.disabled = true;
-            if (btnText) btnText.textContent = 'Memproses Wakaf…';
+                const btn = document.getElementById('btn-submit');
+                const btnText = document.getElementById('btn-submit-text');
+                if (btn) btn.disabled = true;
+                if (btnText) btnText.textContent = 'Memproses Wakaf…';
 
-            try {
-                if (typeof window.trackDonasi === 'function') window.trackDonasi(jumlah);
+                try {
+                    if (typeof window.trackDonasi === 'function') window.trackDonasi(jumlah);
 
-                const payload = {
-                    nama, wa: '0' + wa, kota, kecamatan, jumlah, qty_mushaf: qty, atas_nama: ortu, doa_catatan, source_page: '/itikaf2.html'
-                };
+                    if (btnText) btnText.textContent = 'Menyiapkan Pembayaran...';
 
-                // Endpoint 1: Database Internal (Background)
-                fetch(API_BASE + '/api/donasi', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    // ── Tampilkan overlay ScaleV (bagian form menjadi area pembayaran)
+                    const formWrap = document.querySelector('.form-wrap');
+                    if (formWrap) formWrap.style.position = 'relative';
+
+                    const overlay = document.getElementById('scalev-overlay');
+                    if (overlay) {
+                        overlay.style.display = 'flex';
+                        // Animasi fade-in
+                        overlay.style.opacity = '0';
+                        overlay.style.transition = 'opacity 0.4s ease';
+                        setTimeout(() => overlay.style.opacity = '1', 50);
+                        // Set info di header
+                        const badge = document.getElementById('scalev-amount-badge');
+                        if (badge) badge.textContent = 'Rp ' + Number(jumlah).toLocaleString('id-ID');
+                        const loadingName = document.getElementById('scalev-loading-name');
+                        if (loadingName) loadingName.textContent = '🤲 ' + nama + ' · ' + qty + ' Mushaf';
+                    }
+
+                    // ── PARALEL: Kirim ke Lentera DB + Buat Order di ScaleV ──
+                    const fullWa = '0' + wa;
+                    const address = kecamatan + (kota ? ', ' + kota : '');
+                    const payload = {
+                        nama, wa: fullWa, kota, kecamatan, jumlah, qty_mushaf: qty, atas_nama: ortu, doa_catatan, source_page: '/itikaf2.html'
+                    };
+
+                    // Jalankan keduanya secara paralel!
+                    const [lenteraResult, scalevResult] = await Promise.allSettled([
+                        // 1) Simpan ke DB Lentera (background, tidak blocking)
+                        fetch(API_BASE + '/api/donasi', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        }),
+                        // 2) Buat order di ScaleV via backend API → return payment URL
+                        fetch(API_BASE + '/api/scalev/create-order', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                customer_name: nama,
+                                customer_phone: fullWa,
+                                address: address,
+                                qty: qty,
+                                notes: doa_catatan || ''
+                            })
+                        }).then(r => r.json())
+                    ]);
+
+                    // Ambil payment URL dari hasil ScaleV
+                    let scalevUrl = '';
+                    if (scalevResult.status === 'fulfilled' && scalevResult.value.success) {
+                        scalevUrl = scalevResult.value.payment_url;
+                        console.log('[ScaleV] Payment URL:', scalevUrl);
+                    } else {
+                        // Fallback: langsung ke checkout ScaleV biasa
+                        console.warn('[ScaleV] API gagal, fallback ke checkout biasa');
+                        scalevUrl = 'https://kredit-motor-syari-muamalah-syar.myscalev.com/wakafquran';
+                    }
+
+                    const svIframe = document.getElementById('scalev-iframe');
+                    if (svIframe) {
+                        svIframe.onload = function () {
+                            const loadingEl = document.getElementById('scalev-loading');
+                            if (loadingEl) loadingEl.style.display = 'none';
+                            svIframe.style.display = 'block';
+                            setTimeout(() => overlay.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+                        };
+                        svIframe.src = scalevUrl;
+                    }
+
+                } catch (e) {
+                    console.error('Error on step submit', e);
+                }
+            };
+
+            // ── Kecamatan Autocomplete ──
+            (function () {
+                const inp = document.getElementById('f-kecamatan');
+                const dd = document.getElementById('kec-dropdown');
+                const hid = document.getElementById('f-kota-hidden');
+                let timer = null;
+                if (!inp) return;
+                inp.addEventListener('input', function () {
+                    const q = this.value.trim();
+                    clearTimeout(timer);
+                    if (q.length < 3) { dd.style.display = 'none'; return; }
+                    timer = setTimeout(async () => {
+                        try {
+                            const r = await fetch(API_BASE + '/api/wilayah/search?q=' + encodeURIComponent(q));
+                            const j = await r.json();
+                            if (!j.data || !j.data.length) {
+                                dd.innerHTML = '<div style="padding:0.75rem 1rem;color:#94a3b8;font-size:0.82rem">Tidak ditemukan, coba kata lain</div>';
+                                dd.style.display = 'block'; return;
+                            }
+                            dd.innerHTML = j.data.map(d =>
+                                '<div class="kec-opt" data-kec="' + d.kecamatan + '" data-kota="' + d.kota + '" style="padding:0.6rem 1rem;cursor:pointer;font-size:0.85rem;border-bottom:1px solid #f1f5f9;transition:background 0.15s"><strong>' + d.kecamatan + '</strong><span style="color:#94a3b8;font-size:0.75rem;margin-left:0.5rem">' + d.kota + '</span></div>'
+                            ).join('');
+                            dd.style.display = 'block';
+                            dd.querySelectorAll('.kec-opt').forEach(el => {
+                                el.onmouseenter = () => el.style.background = '#f8fafc';
+                                el.onmouseleave = () => el.style.background = '#fff';
+                                el.onclick = () => { inp.value = el.dataset.kec; hid.value = el.dataset.kota; dd.style.display = 'none'; };
+                            });
+                        } catch (e) { dd.style.display = 'none'; }
+                    }, 300);
                 });
+                document.addEventListener('click', e => { if (!inp.contains(e.target) && !dd.contains(e.target)) dd.style.display = 'none'; });
+            })();
 
-                // Tampilkan dan trigger Endpoint 2 lewat Iframe
-                const fp = document.getElementById('form-pembayaran-iframe');
-                if (fp) fp.style.display = 'block';
-
-                // Hide main form fields visually to focus on the payment gateway iframe
-                const formFields = document.querySelector('.form-fields');
-                if (formFields) formFields.style.display = 'none';
-
-                if (btnText) btnText.textContent = 'Menuju Kasir Pembayaran...';
-
-                // You can pre-fill the external Iframe by passing URL queries if their system allows it, e.g.:
-                // iframe.src = 'https://kredit-motor-syari-muamalah-syar.myscalev.com/wakafquran?name=' + encodeURIComponent(nama) + '&phone=' + encodeURIComponent(wa);
-
-            } catch (e) {
-                console.error('Error on step submit', e);
-            }
-        };
-
-        // ── Kecamatan Autocomplete ──
-        (function () {
-            const inp = document.getElementById('f-kecamatan');
-            const dd = document.getElementById('kec-dropdown');
-            const hid = document.getElementById('f-kota-hidden');
-            let timer = null;
-            if (!inp) return;
-            inp.addEventListener('input', function () {
-                const q = this.value.trim();
-                clearTimeout(timer);
-                if (q.length < 3) { dd.style.display = 'none'; return; }
-                timer = setTimeout(async () => {
-                    try {
-                        const r = await fetch(API_BASE + '/api/wilayah/search?q=' + encodeURIComponent(q));
-                        const j = await r.json();
-                        if (!j.data || !j.data.length) {
-                            dd.innerHTML = '<div style="padding:0.75rem 1rem;color:#94a3b8;font-size:0.82rem">Tidak ditemukan, coba kata lain</div>';
-                            dd.style.display = 'block'; return;
-                        }
-                        dd.innerHTML = j.data.map(d =>
-                            '<div class="kec-opt" data-kec="' + d.kecamatan + '" data-kota="' + d.kota + '" style="padding:0.6rem 1rem;cursor:pointer;font-size:0.85rem;border-bottom:1px solid #f1f5f9;transition:background 0.15s"><strong>' + d.kecamatan + '</strong><span style="color:#94a3b8;font-size:0.75rem;margin-left:0.5rem">' + d.kota + '</span></div>'
-                        ).join('');
-                        dd.style.display = 'block';
-                        dd.querySelectorAll('.kec-opt').forEach(el => {
-                            el.onmouseenter = () => el.style.background = '#f8fafc';
-                            el.onmouseleave = () => el.style.background = '#fff';
-                            el.onclick = () => { inp.value = el.dataset.kec; hid.value = el.dataset.kota; dd.style.display = 'none'; };
-                        });
-                    } catch (e) { dd.style.display = 'none'; }
-                }, 300);
-            });
-            document.addEventListener('click', e => { if (!inp.contains(e.target) && !dd.contains(e.target)) dd.style.display = 'none'; });
-        })();
-
-        // ── Recent Donatur ──
-        window.addEventListener('DOMContentLoaded', () => {
+            // ── Recent Donatur ── (fetch langsung, sudah dalam window.load)
             fetch(API_BASE + '/api/stats/recent').then(r => r.json()).then(data => {
                 const list = document.getElementById('recent-donors-list');
                 if (data && data.success && data.recent.length > 0) {
@@ -1367,7 +1462,7 @@
             }).catch(() => {
                 document.getElementById('recent-donors-list').innerHTML = '<div style="text-align:center;padding:1rem;color:#64748b">Gagal memuat data donatur.</div>';
             });
-        });
+        }); // end window.addEventListener('load')
     </script>
 </body>
 

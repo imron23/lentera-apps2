@@ -6,12 +6,15 @@ const express = require('express');
 const cors = require('cors');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
-const db = require('./db');
+const { pool, initDB } = require('./db');
 const donasi = require('./routes/donasi');
 const wilayah = require('./routes/wilayah');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// ── Database Connection ─────────────────────────────────────────
+initDB();
 
 // Behind nginx reverse proxy
 app.set('trust proxy', 1);
@@ -31,7 +34,6 @@ const csrfTokens = new Map();
 app.get('/api/csrf-token', (req, res) => {
     const token = crypto.randomBytes(32).toString('hex');
     csrfTokens.set(token, Date.now());
-    // Cleanup old tokens (> 1 hour)
     for (const [k, v] of csrfTokens) {
         if (Date.now() - v > 3600000) csrfTokens.delete(k);
     }
@@ -99,7 +101,6 @@ ttq.load('${tiktokId}');ttq.page();
 window._TIKTOK_ID='${tiktokId}';\n`;
     }
 
-    // Universal trackDonasi function
     js += `
 window.trackDonasi=function(j){
   if(typeof fbq!=='undefined')fbq('track','Lead',{value:j,currency:'IDR'});
@@ -112,23 +113,18 @@ window.trackDonasi=function(j){
     res.send(js);
 });
 
-// ── Historical offset ──────────────────────────────────────────
 const SEED_MUSHAF = parseInt(process.env.SEED_MUSHAF) || 6550;
 const SEED_DONATUR = parseInt(process.env.SEED_DONATUR) || 247;
 const SEED_RUPIAH = parseInt(process.env.SEED_RUPIAH) || 32500000;
 
-// ── Public: Stats ───────────────────────────────────────────────
 app.get('/api/stats', async (req, res) => {
     try {
-        const r = await db.query(
-            `SELECT (SELECT COUNT(*)::int FROM users) AS total_donatur,
-                    (SELECT COALESCE(SUM(jumlah),0)::bigint FROM donations) AS total_terkumpul,
-                    (SELECT COALESCE(SUM(qty_mushaf),0)::int FROM donations) AS total_mushaf`
-        );
-        const row = r.rows[0];
-        const dbDon = Number(row.total_donatur);
-        const dbRp = Number(row.total_terkumpul);
-        const dbMsh = Number(row.total_mushaf);
+        const { rows } = await pool.query('SELECT COUNT(*) as total_donatur, COALESCE(SUM(jumlah), 0) as total_terkumpul, COALESCE(SUM(qty_mushaf), 0) as total_mushaf FROM leads');
+        const stats = rows[0];
+
+        const dbDon = parseInt(stats.total_donatur);
+        const dbRp = parseInt(stats.total_terkumpul);
+        const dbMsh = parseInt(stats.total_mushaf);
         const totalDon = dbDon + SEED_DONATUR;
         const totalRp = dbRp + SEED_RUPIAH;
         const totalMsh = dbMsh + SEED_MUSHAF;
@@ -139,7 +135,8 @@ app.get('/api/stats', async (req, res) => {
             total_mushaf: totalMsh, target, persen,
             db_donatur: dbDon, db_terkumpul: dbRp, db_mushaf: dbMsh
         });
-    } catch {
+    } catch (err) {
+        console.error(err);
         res.json({
             success: true, total_donatur: SEED_DONATUR, total_terkumpul: SEED_RUPIAH,
             total_mushaf: SEED_MUSHAF, target: 50000000, persen: 65
@@ -147,273 +144,287 @@ app.get('/api/stats', async (req, res) => {
     }
 });
 
-// ── Public: Recent donations (hashed names for social proof) ────
 app.get('/api/stats/recent', async (req, res) => {
     try {
-        const r = await db.query(
-            `SELECT u.nama, u.kota, d.jumlah, d.qty_mushaf, d.doa_catatan, d.created_at
-             FROM donations d
-             JOIN users u ON d.no_wa = u.no_wa
-             ORDER BY d.created_at DESC LIMIT 15`
+        const { rows: leads } = await pool.query(
+            'SELECT nama_lengkap, kecamatan, kota, wilayah, jumlah, qty_mushaf, doa_catatan, created_at FROM leads WHERE jumlah > 0 ORDER BY created_at DESC LIMIT 15'
         );
-        const recent = r.rows.map(row => ({
-            nama: row.nama,
-            kota: row.kota || '',
-            jumlah: row.jumlah,
-            qty_mushaf: row.qty_mushaf,
-            doa_catatan: row.doa_catatan || '',
-            created_at: row.created_at
+
+        const recent = leads.map(lead => ({
+            nama: lead.nama_lengkap,
+            kota: lead.wilayah || lead.kota || lead.kecamatan || '',
+            jumlah: lead.jumlah,
+            qty_mushaf: lead.qty_mushaf,
+            doa_catatan: lead.doa_catatan || '',
+            created_at: lead.created_at
         }));
         res.json({ success: true, recent });
-    } catch {
+    } catch (err) {
+        console.error(err);
         res.json({ success: true, recent: [] });
     }
 });
 
-// ── Admin: Init DB (Temporary migration route) ────────────────────
-app.get('/api/admin/init-db', requireAdmin, async (req, res) => {
+app.get('/api/admin/donatur', requireAdmin, async (req, res) => {
     try {
-        const https = require('https');
-        const url = 'https://raw.githubusercontent.com/imron23/lentera-apps2/main/database/init.sql';
-        const sqlScript = await new Promise((resolve, reject) => {
-            https.get(url, (resp) => {
-                let data = '';
-                resp.on('data', chunk => data += chunk);
-                resp.on('end', () => resolve(data));
-            }).on('error', reject);
-        });
-        await db.query(sqlScript);
-        res.json({ success: true, message: 'Database initialized successfully!' });
+        const { rows } = await pool.query(
+            `SELECT id as "user_id", nama_lengkap as nama,
+                    kecamatan, kota, wilayah,
+                    whatsapp_num as wa, atas_nama,
+                    jumlah, qty_mushaf, created_at, doa_catatan
+             FROM leads WHERE jumlah > 0 ORDER BY created_at DESC`
+        );
+        const { rows: aggrRows } = await pool.query('SELECT COUNT(*) as total_donatur, COALESCE(SUM(jumlah), 0) as total_terkumpul, COALESCE(SUM(qty_mushaf), 0) as total_mushaf FROM leads WHERE jumlah > 0');
+
+        const stats = {
+            total_donatur: parseInt(aggrRows[0].total_donatur),
+            total_terkumpul: parseInt(aggrRows[0].total_terkumpul),
+            total_mushaf: parseInt(aggrRows[0].total_mushaf),
+        };
+        res.json({ success: true, rows, stats });
     } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
+        console.error(err);
+        res.status(500).json({ success: false, message: err.message });
     }
 });
 
-// ── Admin: List All Data ────────────────────────────────────────
-app.get('/api/admin/data', requireAdmin, async (req, res) => {
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'crm_secret_123';
+
+function requireAuth(req, res, next) {
+    const header = req.headers['authorization'];
+    if (!header) return res.status(401).json({ success: false, message: 'Unauthorized' });
+    const token = header.split(' ')[1];
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) return res.status(403).json({ success: false, message: 'Invalid token' });
+        req.user = decoded;
+        next();
+    });
+}
+
+app.post('/api/auth/login', (req, res) => {
+    const { username, password } = req.body;
+    if (password === '@Imron23' || password === process.env.WA_ADMIN) {
+        const token = jwt.sign({ username: username || 'admin' }, JWT_SECRET, { expiresIn: '7d' });
+        res.json({ success: true, token, user: { username: username || 'admin' } });
+    } else {
+        res.status(401).json({ success: false, message: 'Invalid password' });
+    }
+});
+
+app.get('/api/leads', requireAuth, async (req, res) => {
     try {
-        const leads = await db.query(
-            `SELECT l.id, u.id_unik, u.nama, u.no_wa AS wa, u.kota, u.kecamatan, u.segmentation,
-                    l.source_page, l.cs_assignee, l.status, l.catatan, l.created_at
-             FROM leads l
-             JOIN users u ON l.no_wa = u.no_wa
-             ORDER BY l.created_at DESC LIMIT 1000`
-        );
-        const donations = await db.query(
-            `SELECT d.id, u.id_unik, u.nama, u.no_wa AS wa, u.kota, u.kecamatan, u.segmentation,
-                    d.jumlah, d.qty_mushaf, d.atas_nama, d.doa_catatan, d.created_at
-             FROM donations d
-             JOIN users u ON d.no_wa = u.no_wa
-             ORDER BY d.created_at DESC LIMIT 1000`
-        );
-        const stats = await db.query(
-            `SELECT (SELECT COUNT(*)::int FROM users) AS total_donatur,
-                    (SELECT COALESCE(SUM(jumlah),0)::bigint FROM donations) AS total_terkumpul,
-                    (SELECT COALESCE(SUM(qty_mushaf),0)::int FROM donations) AS total_mushaf,
-                    (SELECT COUNT(*)::int FROM leads WHERE status='baru' OR status IS NULL) AS total_baru,
-                    (SELECT COUNT(*)::int FROM leads WHERE status='dihubungi') AS total_dihubungi,
-                    (SELECT COUNT(*)::int FROM leads WHERE status='terkonfirmasi') AS total_terkonfirmasi,
-                    (SELECT COUNT(*)::int FROM leads WHERE status='selesai') AS total_selesai,
-                    (SELECT COALESCE(SUM(d.jumlah),0)::bigint FROM donations d
-                        JOIN leads l ON d.no_wa = l.no_wa
-                        WHERE l.status IN ('selesai','terkonfirmasi')) AS revenue,
-                    (SELECT COALESCE(SUM(d.jumlah),0)::bigint FROM donations d
-                        JOIN leads l ON d.no_wa = l.no_wa
-                        WHERE l.status IN ('baru','dihubungi') OR l.status IS NULL) AS potensi_revenue`
-        );
-        res.json({ success: true, leads: leads.rows, donations: donations.rows, stats: stats.rows[0] });
+        const { rows: leads } = await pool.query('SELECT * FROM leads ORDER BY created_at DESC');
+        res.json({
+            success: true, data: leads.map(l => ({
+                ...l,
+                id: l.user_id,
+                revenue: l.jumlah,
+            }))
+        });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 });
 
-// ── Admin: Update lead status/catatan ───────────────────────────
+app.put('/api/leads/:id', requireAuth, async (req, res) => {
+    try {
+        const keys = Object.keys(req.body);
+        const values = Object.values(req.body);
+        if (keys.length === 0) return res.json({ success: true });
+
+        const setString = keys.map((k, i) => `${k} = $${i + 2}`).join(', ');
+        const query = `UPDATE leads SET ${setString} WHERE user_id = $1 RETURNING *`;
+        const { rows } = await pool.query(query, [req.params.id, ...values]);
+
+        res.json({ success: true, data: rows[0] });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ── /api/admin/data — endpoint utama imron.html ──────────────────
+app.get('/api/admin/data', requireAdmin, async (req, res) => {
+    try {
+        // Leads
+        const { rows: leadsRaw } = await pool.query(
+            `SELECT id, user_id, nama_lengkap AS nama, whatsapp_num AS wa,
+                    kecamatan, kota, wilayah, jumlah, qty_mushaf, atas_nama,
+                    doa_catatan, catatan, source_page, landing_page,
+                    status_followup AS status, created_at, updated_at
+             FROM leads ORDER BY created_at DESC`
+        );
+        // Donations (leads yang sudah ada jumlah)
+        const donations = leadsRaw.filter(l => (l.jumlah || 0) > 0).map(l => ({
+            id: l.id, nama: l.nama, wa: l.wa,
+            kecamatan: l.kecamatan, kota: l.kota, wilayah: l.wilayah,
+            jumlah: l.jumlah, qty_mushaf: l.qty_mushaf,
+            atas_nama: l.atas_nama, doa_catatan: l.doa_catatan,
+            catatan: l.catatan, created_at: l.created_at
+        }));
+
+        // Stats
+        const { rows: ag } = await pool.query(
+            `SELECT
+                COUNT(*)                                             AS total_donatur,
+                COALESCE(SUM(jumlah), 0)                            AS total_terkumpul,
+                COALESCE(SUM(qty_mushaf), 0)                        AS total_mushaf,
+                COALESCE(SUM(CASE WHEN status_followup='terkonfirmasi' OR status_followup='selesai' THEN jumlah ELSE 0 END), 0) AS revenue,
+                COALESCE(SUM(CASE WHEN status_followup NOT IN ('selesai') THEN jumlah ELSE 0 END), 0) AS potensi_revenue,
+                COUNT(CASE WHEN status_followup='New Data' OR status_followup='baru' THEN 1 END) AS total_baru,
+                COUNT(CASE WHEN status_followup='dihubungi' THEN 1 END)      AS total_dihubungi,
+                COUNT(CASE WHEN status_followup='terkonfirmasi' THEN 1 END)  AS total_terkonfirmasi,
+                COUNT(CASE WHEN status_followup='selesai' THEN 1 END)        AS total_selesai
+             FROM leads WHERE jumlah > 0`
+        );
+        const stats = {
+            total_donatur: parseInt(ag[0].total_donatur),
+            total_terkumpul: parseInt(ag[0].total_terkumpul),
+            total_mushaf: parseInt(ag[0].total_mushaf),
+            revenue: parseInt(ag[0].revenue),
+            potensi_revenue: parseInt(ag[0].potensi_revenue),
+            total_baru: parseInt(ag[0].total_baru),
+            total_dihubungi: parseInt(ag[0].total_dihubungi),
+            total_terkonfirmasi: parseInt(ag[0].total_terkonfirmasi),
+            total_selesai: parseInt(ag[0].total_selesai),
+        };
+
+        res.json({ success: true, leads: leadsRaw, donations, stats });
+    } catch (err) {
+        console.error('/api/admin/data', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ── /api/admin/analytics — chart data ────────────────────────────
+app.get('/api/admin/analytics', requireAdmin, async (req, res) => {
+    try {
+        // Daily trend (last 30 days)
+        const { rows: daily } = await pool.query(
+            `SELECT DATE(created_at) AS date,
+                    COALESCE(SUM(jumlah), 0) AS amount,
+                    COUNT(*) AS count
+             FROM leads WHERE jumlah > 0 AND created_at >= NOW() - INTERVAL '30 days'
+             GROUP BY DATE(created_at) ORDER BY date`
+        );
+        // Status distribution
+        const { rows: statuses } = await pool.query(
+            `SELECT COALESCE(status_followup,'baru') AS status, COUNT(*) AS count
+             FROM leads GROUP BY status_followup ORDER BY count DESC`
+        );
+        // Top regions
+        const { rows: regions } = await pool.query(
+            `SELECT COALESCE(wilayah, kota, kecamatan, 'Lainnya') AS region,
+                    COALESCE(SUM(jumlah), 0) AS amount
+             FROM leads WHERE jumlah > 0
+             GROUP BY 1 ORDER BY amount DESC LIMIT 10`
+        );
+        // Recent activity
+        const { rows: recent } = await pool.query(
+            `SELECT nama_lengkap AS nama, kecamatan, jumlah, qty_mushaf, created_at
+             FROM leads WHERE jumlah > 0 ORDER BY created_at DESC LIMIT 10`
+        );
+
+        res.json({ success: true, daily, statuses, regions, recent });
+    } catch (err) {
+        console.error('/api/admin/analytics', err);
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+// ── /api/admin/leads/:id PATCH — update status & catatan ─────────
 app.patch('/api/admin/leads/:id', requireAdmin, async (req, res) => {
     try {
         const { status, catatan } = req.body;
-        const validStatus = ['baru', 'dihubungi', 'terkonfirmasi', 'selesai'];
-        if (status && !validStatus.includes(status))
-            return res.status(400).json({ success: false, message: 'Status tidak valid' });
-
-        const sets = [];
-        const vals = [];
-        let idx = 1;
-        if (status !== undefined) { sets.push(`status=$${idx++}`); vals.push(status); }
-        if (catatan !== undefined) { sets.push(`catatan=$${idx++}`); vals.push(catatan); }
-        if (!sets.length) return res.status(400).json({ success: false, message: 'Tidak ada data' });
-
-        vals.push(parseInt(req.params.id));
-        const q = `UPDATE leads SET ${sets.join(', ')} WHERE id=$${idx} RETURNING id, status, catatan`;
-        const r = await db.query(q, vals);
-        if (!r.rows.length) return res.status(404).json({ success: false, message: 'Lead tidak ditemukan' });
-        res.json({ success: true, data: r.rows[0] });
+        await pool.query(
+            `UPDATE leads SET status_followup = $1, catatan = $2, updated_at = NOW()
+             WHERE id = $3`,
+            [status || 'baru', catatan || '', req.params.id]
+        );
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 });
 
-// ── Admin: Analytics ────────────────────────────────────────────
-app.get('/api/admin/analytics', requireAdmin, async (req, res) => {
+// ── /api/admin/leads/:id DELETE ───────────────────────────────────
+app.delete('/api/admin/leads/:id', requireAdmin, async (req, res) => {
     try {
-        const daily = await db.query(
-            `SELECT DATE(created_at) AS date, COUNT(*)::int AS count,
-                    COALESCE(SUM(jumlah),0)::bigint AS amount
-             FROM donations WHERE created_at >= NOW() - INTERVAL '30 days'
-             GROUP BY DATE(created_at) ORDER BY date`
-        );
-        const regions = await db.query(
-            `SELECT COALESCE(u.kecamatan, 'Tidak diisi') AS region,
-                    COUNT(*)::int AS count, COALESCE(SUM(d.jumlah),0)::bigint AS amount
-             FROM donations d JOIN users u ON d.no_wa = u.no_wa
-             GROUP BY region ORDER BY amount DESC LIMIT 10`
-        );
-        const statuses = await db.query(
-            `SELECT COALESCE(status,'baru') AS status, COUNT(*)::int AS count
-             FROM leads GROUP BY status`
-        );
-        const recent = await db.query(
-            `SELECT d.id, u.nama, u.kota, u.kecamatan, d.jumlah, d.qty_mushaf,
-                    d.created_at
-             FROM donations d JOIN users u ON d.no_wa = u.no_wa
-             ORDER BY d.created_at DESC LIMIT 10`
-        );
-        const hourly = await db.query(
-            `SELECT EXTRACT(HOUR FROM created_at)::int AS hour, COUNT(*)::int AS count
-             FROM donations GROUP BY hour ORDER BY hour`
-        );
-        res.json({
-            success: true, daily: daily.rows, regions: regions.rows,
-            statuses: statuses.rows, recent: recent.rows, hourly: hourly.rows
-        });
+        await pool.query('DELETE FROM leads WHERE id = $1', [req.params.id]);
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 });
 
-// ── Admin: CS Analytics ─────────────────────────────────────────
-app.get('/api/admin/cs-analytics', requireAdmin, async (req, res) => {
+// ── /api/admin/donations/:id DELETE ──────────────────────────────
+app.delete('/api/admin/donations/:id', requireAdmin, async (req, res) => {
     try {
-        const csPerf = await db.query(
-            `SELECT cl.cs_name,
-                    COUNT(cl.id)::int AS total_leads,
-                    COUNT(DISTINCT CASE WHEN l.status = 'selesai' THEN l.id END)::int AS total_converted,
-                    COUNT(DISTINCT CASE WHEN l.status = 'baru' THEN l.id END)::int AS total_pending
-             FROM cs_log cl
-             LEFT JOIN leads l ON cl.lead_id = l.id
-             GROUP BY cl.cs_name
-             ORDER BY total_leads DESC`
-        );
-        const csByDay = await db.query(
-            `SELECT DATE(assigned_at) AS date, cs_name, COUNT(*)::int AS count
-             FROM cs_log WHERE assigned_at >= NOW() - INTERVAL '30 days'
-             GROUP BY DATE(assigned_at), cs_name ORDER BY date`
-        );
-        res.json({ success: true, performance: csPerf.rows, daily: csByDay.rows });
+        await pool.query('DELETE FROM leads WHERE id = $1', [req.params.id]);
+        res.json({ success: true });
     } catch (err) {
         res.status(500).json({ success: false, message: err.message });
     }
 });
 
-// ── Admin: CS Rotator CRUD ──────────────────────────────────────
+// ── CS Rotator CRUD ───────────────────────────────────────────────
 app.get('/api/admin/cs-rotator', requireAdmin, async (req, res) => {
     try {
-        const r = await db.query('SELECT * FROM cs_rotator ORDER BY id');
-        res.json({ success: true, data: r.rows });
-    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+        const { rows } = await pool.query('SELECT * FROM cs_rotator ORDER BY id');
+        res.json({ success: true, data: rows });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
 });
 
 app.post('/api/admin/cs-rotator', requireAdmin, async (req, res) => {
     try {
         const { cs_name, wa_number, weight_percentage } = req.body;
-        if (!cs_name || !wa_number) return res.status(400).json({ success: false, message: 'cs_name & wa_number required' });
-        const r = await db.query(
-            `INSERT INTO cs_rotator (cs_name, wa_number, weight_percentage) VALUES ($1, $2, $3) RETURNING *`,
-            [cs_name, wa_number.replace(/\D/g, ''), parseInt(weight_percentage) || 50]
+        const { rows } = await pool.query(
+            `INSERT INTO cs_rotator (cs_name, wa_number, weight_percentage)
+             VALUES ($1, $2, $3) RETURNING *`,
+            [cs_name, wa_number, weight_percentage || 50]
         );
-        res.json({ success: true, data: r.rows[0] });
-    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+        res.json({ success: true, data: rows[0] });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
+
+app.patch('/api/admin/cs-rotator/:id', requireAdmin, async (req, res) => {
+    try {
+        const { is_active, weight_percentage } = req.body;
+        const updates = [];
+        const vals = [];
+        if (is_active !== undefined) { updates.push(`is_active = $${vals.length + 1}`); vals.push(is_active); }
+        if (weight_percentage !== undefined) { updates.push(`weight_percentage = $${vals.length + 1}`); vals.push(weight_percentage); }
+        if (!updates.length) return res.json({ success: true });
+        vals.push(req.params.id);
+        await pool.query(`UPDATE cs_rotator SET ${updates.join(', ')} WHERE id = $${vals.length}`, vals);
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
+    }
 });
 
 app.delete('/api/admin/cs-rotator/:id', requireAdmin, async (req, res) => {
     try {
-        const r = await db.query('DELETE FROM cs_rotator WHERE id=$1 RETURNING id', [parseInt(req.params.id)]);
-        if (!r.rows.length) return res.status(404).json({ success: false, message: 'Not found' });
+        await pool.query('DELETE FROM cs_rotator WHERE id = $1', [req.params.id]);
         res.json({ success: true });
-    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
-});
-
-// ── Delete Data ─────────────────────────────────────────────────
-app.delete('/api/admin/leads/:id', requireAdmin, async (req, res) => {
-    try {
-        const id = parseInt(req.params.id);
-        const r = await db.query('DELETE FROM leads WHERE id=$1 RETURNING id', [id]);
-        if (!r.rows.length) return res.status(404).json({ success: false, message: 'Tidak ditemukan' });
-        res.json({ success: true, message: 'Deleted' });
-    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
-});
-
-app.delete('/api/admin/donations/:id', requireAdmin, async (req, res) => {
-    try {
-        const id = parseInt(req.params.id);
-        const r = await db.query('DELETE FROM donations WHERE id=$1 RETURNING id', [id]);
-        if (!r.rows.length) return res.status(404).json({ success: false, message: 'Tidak ditemukan' });
-        res.json({ success: true, message: 'Deleted' });
-    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
-});
-
-// ── Admin: Settings (tracking pixels) ───────────────────────────
-app.get('/api/admin/settings', requireAdmin, (_req, res) => {
-    res.json({
-        success: true,
-        settings: {
-            GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID || '',
-            META_PIXEL_ID: process.env.META_PIXEL_ID || '',
-            TIKTOK_PIXEL_ID: process.env.TIKTOK_PIXEL_ID || '',
-            TARGET_DONASI: process.env.TARGET_DONASI || '50000000',
-            SEED_DONATUR: process.env.SEED_DONATUR || '247',
-            SEED_MUSHAF: process.env.SEED_MUSHAF || '6550',
-            SEED_RUPIAH: process.env.SEED_RUPIAH || '32500000'
-        }
-    });
-});
-
-app.patch('/api/admin/settings', requireAdmin, (req, res) => {
-    const allowed = ['GA_MEASUREMENT_ID', 'META_PIXEL_ID', 'TIKTOK_PIXEL_ID', 'TARGET_DONASI', 'SEED_DONATUR', 'SEED_MUSHAF', 'SEED_RUPIAH'];
-    const updated = {};
-    for (const key of allowed) {
-        if (req.body[key] !== undefined) {
-            process.env[key] = String(req.body[key]);
-            updated[key] = process.env[key];
-        }
+    } catch (err) {
+        res.status(500).json({ success: false, message: err.message });
     }
-    res.json({ success: true, updated });
 });
 
-// ── Admin: CS Rotator PATCH ─────────────────────────────────────
-app.patch('/api/admin/cs-rotator/:id', requireAdmin, async (req, res) => {
-    try {
-        const { cs_name, wa_number, weight_percentage, is_active } = req.body;
-        const sets = [], vals = [];
-        let idx = 1;
-        if (cs_name !== undefined) { sets.push(`cs_name=$${idx++}`); vals.push(cs_name); }
-        if (wa_number !== undefined) { sets.push(`wa_number=$${idx++}`); vals.push(wa_number.replace(/\D/g, '')); }
-        if (weight_percentage !== undefined) { sets.push(`weight_percentage=$${idx++}`); vals.push(parseInt(weight_percentage)); }
-        if (is_active !== undefined) { sets.push(`is_active=$${idx++}`); vals.push(Boolean(is_active)); }
-        if (!sets.length) return res.status(400).json({ success: false, message: 'No data' });
-        vals.push(parseInt(req.params.id));
-        const r = await db.query(`UPDATE cs_rotator SET ${sets.join(', ')} WHERE id=$${idx} RETURNING *`, vals);
-        if (!r.rows.length) return res.status(404).json({ success: false, message: 'Not found' });
-        res.json({ success: true, data: r.rows[0] });
-    } catch (err) { res.status(500).json({ success: false, message: err.message }); }
-});
+app.get('/api/programs', requireAuth, (req, res) => res.json({ success: true, data: [] }));
+app.get('/api/pages', requireAuth, (req, res) => res.json({ success: true, data: [] }));
+app.get('/api/settings/admin', requireAuth, (req, res) => res.json({ success: true, data: {} }));
 
-// ── Routes ──────────────────────────────────────────────────────
 app.use('/api/donasi', donasi);
 app.use('/api/wilayah', wilayah);
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
 app.use((_req, res) => res.status(404).json({ success: false, message: 'Not found' }));
 
-// ── Start ────────────────────────────────────────────────────────
 app.listen(PORT, () => {
     console.log(`[LDI Backend] Running on port ${PORT}`);
     if (process.env.GA_MEASUREMENT_ID) console.log(`  GA4    : ${process.env.GA_MEASUREMENT_ID}`);

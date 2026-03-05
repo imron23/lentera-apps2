@@ -1,31 +1,29 @@
 services:
-  # ── PostgreSQL Database ─────────────────────────────────────────
   postgres:
-    image: postgres:16-alpine
+    image: postgres:15
     container_name: ldi_postgres
     restart: always
     environment:
-      POSTGRES_DB: Imron23
-      POSTGRES_USER: Imron23
-      POSTGRES_PASSWORD: "@Imron23"
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: munira_crm
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    ports:
-      - "5432:5432"
+      - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U Imron23 -d Imron23" ]
+      test: ["CMD-SHELL", "pg_isready -U user -d munira_crm"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
       - ldi_net
 
-  # ── Node.js Backend ─────────────────────────────────────────────
   backend:
     build: ./backend
     container_name: ldi_backend
     restart: always
+    environment:
+      - PG_URI=postgresql://user:password@postgres:5432/munira_crm
+      - PORT=3000
     env_file: ./backend/.env
     depends_on:
       postgres:
@@ -33,7 +31,6 @@ services:
     networks:
       - ldi_net
 
-  # ── Nginx (Static + API proxy) ──────────────────────────────────
   nginx:
     image: nginx:1.25-alpine
     container_name: ldi_nginx
@@ -49,8 +46,8 @@ services:
       - ldi_net
 
 volumes:
-  postgres_data:
-    name: ldi_postgres_data
+  pg_data:
+    name: ldi_pg_data
 
 networks:
   ldi_net:

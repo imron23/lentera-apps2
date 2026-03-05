@@ -100,7 +100,6 @@ Jika Anda membuka port database di Easypanel (tab Advanced → Ports):
 | `donations`    | Data donasi/wakaf                      |
 | `cs_rotator`   | Konfigurasi CS WhatsApp Rotator        |
 | `cs_log`       | Log assignment CS ke leads             |
-| `global_settings` | Pengaturan global (pixel, target dll) |
 
 ## 🔄 Flow Donasi
 

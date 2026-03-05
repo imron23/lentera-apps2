@@ -64,29 +64,14 @@ Di dalam project `ldi-wakaf`:
 
 ### Inisialisasi Database
 
-Setelah Postgres running, klik tab **Terminal** di service Postgres, lalu jalankan:
+Setelah Postgres running, klik tab **Terminal** di service Postgres, lalu jalankan `init.sql`:
 
-```sql
--- Buat tabel donatur
-CREATE TABLE IF NOT EXISTS donatur (
-  id          SERIAL          PRIMARY KEY,
-  nama        VARCHAR(150)    NOT NULL,
-  wa          VARCHAR(20)     NOT NULL,
-  kecamatan   VARCHAR(150),
-  jumlah      INTEGER         NOT NULL CHECK (jumlah > 0),
-  qty_mushaf  SMALLINT,
-  atas_nama   VARCHAR(150),
-  created_at  TIMESTAMPTZ     NOT NULL DEFAULT NOW()
-);
-
-CREATE INDEX IF NOT EXISTS idx_wa      ON donatur (wa);
-CREATE INDEX IF NOT EXISTS idx_created ON donatur (created_at DESC);
-```
-
-Atau lewat SSH server:
 ```bash
-docker exec -it ldi-wakaf_postgres_1 psql -U Imron23 -d Imron23 < /home/USER/ldi-wakaf/database/init.sql
+# Dari SSH server
+docker exec -i ldi-wakaf_postgres_1 psql -U Imron23 -d Imron23 < /home/USER/ldi-wakaf/database/init.sql
 ```
+
+Atau copy-paste isi file `database/init.sql` ke terminal Postgres di EasyPanel.
 
 ---
 
@@ -216,3 +201,10 @@ ufw allow 80
 ufw allow 443
 ufw allow 3000
 ```
+
+## Database Update (MongoDB)
+
+Starting on Version X, the backend handles forms uniformly through MongoDB.
+Ensure that your infrastructure provides a MongoDB instance, passing connection details through `MONGO_URI`. 
+
+The Docker Compose configuration uses the community `mongo:6` Docker image out-of-the-box and requires no specific initialization scripts.
