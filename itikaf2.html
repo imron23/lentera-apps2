@@ -194,12 +194,18 @@
             height: 1px;
         }
 
+        /* ── Paket Overrides Strict ── */
         .paket-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-dark);
+            background: var(--bg-card) !important;
+            border: 1px solid var(--border-dark) !important;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            padding: 2.5rem 1.5rem !important;
+            border-radius: 1.5rem !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .paket-card::before {
@@ -216,52 +222,76 @@
         }
 
         .paket-card:hover {
-            border-color: var(--gold-light);
-            box-shadow: 0 10px 30px var(--glow-gold);
+            border-color: var(--gold-light) !important;
+            box-shadow: 0 10px 30px var(--glow-gold) !important;
             transform: scale(1.02);
         }
 
         .paket-title {
-            color: var(--text-light);
+            color: var(--text-light) !important;
             text-shadow: 0 0 10px rgba(114, 9, 183, 0.5);
+            margin-bottom: 0.5rem !important;
         }
 
         details.paket-note-box {
-            background: rgba(21, 6, 42, 0.7);
-            border: 1px solid var(--border-dark);
-            border-left: 4px solid var(--gold-light);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-            margin-top: 3rem;
-            border-radius: 1rem;
+            background: rgba(21, 6, 42, 0.8) !important;
+            border: 1px solid rgba(181, 23, 158, 0.3) !important;
+            border-left: 4px solid var(--gold-light) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+            margin-top: 3.5rem !important;
+            border-radius: 1rem !important;
+            padding: 0 !important;
         }
 
         summary.paket-note-title {
-            color: var(--gold-light);
-            padding: 1.25rem 1.5rem;
+            color: var(--gold-light) !important;
+            padding: 1.25rem 1.75rem !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            font-size: 0.9rem !important;
+            letter-spacing: 0.05em !important;
         }
 
         .paket-note-content {
-            padding: 0 1.5rem 1.25rem 1.5rem;
-            border-top: 1px dashed rgba(251, 191, 36, 0.2);
+            padding: 0 1.75rem 1.5rem 1.75rem !important;
+            border-top: 1px dashed rgba(251, 191, 36, 0.2) !important;
         }
 
         .paket-note-text {
-            color: var(--text-muted);
+            color: var(--text-muted) !important;
+            line-height: 1.8 !important;
         }
 
         .paket-btn {
             background: #fff !important;
             color: var(--bg-dark) !important;
-            padding: 1rem !important;
-            border-radius: 1rem !important;
+            padding: 1.125rem 1rem !important;
+            border-radius: 999px !important;
             font-weight: 800 !important;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+            text-align: center !important;
+            margin-top: auto !important;
+            letter-spacing: 0.02em !important;
         }
 
         .paket-card.popular .paket-btn {
             background: #fff !important;
             color: var(--magenta) !important;
         }
+
+        .paket-grid {
+            gap: 2rem !important;
+        }
+
+        .section-badge {
+            padding: 0.5rem 1.25rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            border-radius: 999px !important;
+            line-height: normal !important;
+        }
+
 
         .form-section {
             background: linear-gradient(135deg, #0a0314, #1b0638);
