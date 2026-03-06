@@ -1048,13 +1048,14 @@ button {
 .paket-btn {
     display: block;
     width: 100%;
-    padding: .75rem;
-    border-radius: .875rem;
-    font-weight: 700;
+    padding: 1rem;
+    border-radius: 1rem;
+    font-weight: 800;
     font-size: .875rem;
     background: #f3e8ff;
     color: var(--purple);
-    transition: background .2s, color .2s;
+    transition: all .2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .paket-card:hover .paket-btn {
@@ -2369,7 +2370,7 @@ details.paket-note-box {
     border-radius: .875rem;
     padding: 0;
     /* padding dipindah ke summary & content */
-    margin-top: 1.5rem;
+    margin-top: 3rem;
     overflow: hidden;
     transition: all 0.3s ease;
 }
@@ -2378,7 +2379,7 @@ summary.paket-note-title {
     font-size: .8rem;
     font-weight: 800;
     color: #7209b7;
-    padding: 1rem 1.25rem;
+    padding: 1.25rem 1.5rem;
     text-transform: uppercase;
     letter-spacing: .05em;
     cursor: pointer;
@@ -2406,7 +2407,7 @@ details.paket-note-box[open] summary.paket-note-title::after {
 }
 
 .paket-note-content {
-    padding: 0 1.25rem 1rem 1.25rem;
+    padding: 0 1.5rem 1.25rem 1.5rem;
     border-top: 1px dashed rgba(114, 9, 183, 0.15);
     margin-top: -0.25rem;
 }
