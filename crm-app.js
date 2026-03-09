@@ -18,6 +18,13 @@ function formatRpShort(n) {
     return String(n);
 }
 
+const fmtWa = n => {
+    let c = String(n || '').replace(/\D/g, '');
+    if (c.startsWith('62')) return '+' + c;
+    if (c.startsWith('0')) return '+62' + c.replace(/^0+/, '');
+    return c ? '+' + c : '—';
+};
+
 /**
  * Display lengkap dengan titik: 35000000 → "35.000.000"
  */
@@ -738,7 +745,7 @@ function renderLeadsTable() {
             </td>
             <td>
                 <strong>${L.nama_lengkap}</strong><br>
-                <a href="#" class="wa-direct" onclick="alertWA('${L.whatsapp_num}'); return false;" style="color:var(--success); font-weight:600; text-decoration:none;">${L.whatsapp_num}</a>
+                <a href="#" class="wa-direct" onclick="alertWA('${L.whatsapp_num}'); return false;" style="color:var(--success); font-weight:600; text-decoration:none;">${fmtWa(L.whatsapp_num)}</a>
             </td>
             <td>
                 ${L.paket_pilihan || 'N/A'}<br>

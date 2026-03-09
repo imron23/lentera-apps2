@@ -144,8 +144,18 @@ function getJumlah() {
 
 // ── Submit → WA (sync) + DB (background, parallel) ──────────────
 async function submitDonasi() {
-    const nama = (document.getElementById('f-nama')?.value || '').trim();
-    const wa = (document.getElementById('f-wa')?.value || '').trim();
+    // ── Phone Number Normalization ──────────────────────────────────
+    const normalizeWa = (val) => {
+        let clean = String(val || '').replace(/\D/g, '');
+        if (clean.startsWith('620')) clean = clean.slice(3);
+        else if (clean.startsWith('62')) clean = clean.slice(2);
+        else if (clean.startsWith('0')) clean = clean.replace(/^0+/, '');
+        if (clean.length > 5) return '0' + clean;
+        return clean;
+    };
+
+    const waRaw = (document.getElementById('f-wa')?.value || '').trim();
+    const wa = normalizeWa(waRaw);
     const kota = (document.getElementById('f-kota-hidden')?.value || '').trim();
     const kecamatan = (document.getElementById('f-kecamatan')?.value || '').trim();
     const jumlah = getJumlah();
@@ -155,7 +165,7 @@ async function submitDonasi() {
 
     // ── Validasi ───────────────────────────────────────────────────
     if (!nama) { showAlert('Mohon isi nama lengkap Anda.'); return; }
-    if (!wa || wa.length < 7) { showAlert('Mohon isi nomor WhatsApp yang valid.'); return; }
+    if (!wa || wa.length < 9) { showAlert('Mohon isi nomor WhatsApp yang valid.'); return; }
     if (!kecamatan) { showAlert('Mohon isi kecamatan / kota Anda.'); return; }
     if (!jumlah || jumlah < 1000) { showAlert('Pilih nominal donasi atau isi minimal Rp 1.000.'); return; }
 
@@ -173,7 +183,7 @@ async function submitDonasi() {
         if (typeof window.trackDonasi === 'function') window.trackDonasi(jumlah);
 
         const payload = {
-            nama, wa: '0' + wa, kota, kecamatan, jumlah, qty_mushaf: qty, atas_nama: ortu, doa_catatan, source_page: window.location.pathname
+            nama, wa: wa, kota, kecamatan, jumlah, qty_mushaf: qty, atas_nama: ortu, doa_catatan, source_page: window.location.pathname
         };
 
         const r = await fetch(API_BASE + '/api/donasi', {

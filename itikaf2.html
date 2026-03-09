@@ -1357,8 +1357,19 @@
         window.addEventListener('load', function () {
             // Override the global submitDonasi specifically for itikaf2.html
             window.submitDonasi = async function () {
+                // ── Phone Number Normalization ──────────────────────────────────
+                const normalizeWa = (val) => {
+                    let clean = String(val || '').replace(/\D/g, '');
+                    if (clean.startsWith('620')) clean = clean.slice(3);
+                    else if (clean.startsWith('62')) clean = clean.slice(2);
+                    else if (clean.startsWith('0')) clean = clean.replace(/^0+/, '');
+                    if (clean.length > 5) return '0' + clean;
+                    return clean;
+                };
+
                 const nama = (document.getElementById('f-nama')?.value || '').trim();
-                const wa = (document.getElementById('f-wa')?.value || '').trim();
+                const waRaw = (document.getElementById('f-wa')?.value || '').trim();
+                const wa = normalizeWa(waRaw);
                 const kota = (document.getElementById('f-kota-hidden')?.value || '').trim();
                 const kecamatan = (document.getElementById('f-kecamatan')?.value || '').trim();
                 const jumlah = window.getJumlah ? window.getJumlah() : 0;
@@ -1367,7 +1378,7 @@
                 const doa_catatan = (document.getElementById('f-doa')?.value || '').trim();
 
                 if (!nama) { showAlert('Mohon isi nama lengkap Anda.'); return; }
-                if (!wa || wa.length < 7) { showAlert('Mohon isi nomor WhatsApp yang valid.'); return; }
+                if (!wa || wa.length < 9) { showAlert('Mohon isi nomor WhatsApp yang valid.'); return; }
                 if (!kecamatan) { showAlert('Mohon isi kecamatan / kota Anda.'); return; }
                 if (!jumlah || jumlah < 1000) { showAlert('Pilih nominal donasi atau isi minimal Rp 1.000.'); return; }
 
@@ -1403,10 +1414,9 @@
                     }
 
                     // ── PARALEL: Kirim ke Lentera DB + Buat Order di ScaleV ──
-                    const fullWa = '0' + wa;
                     const address = kecamatan + (kota ? ', ' + kota : '');
                     const payload = {
-                        nama, wa: fullWa, kota, kecamatan, jumlah, qty_mushaf: qty, atas_nama: ortu, doa_catatan, source_page: '/itikaf2.html'
+                        nama, wa: wa, kota, kecamatan, jumlah, qty_mushaf: qty, atas_nama: ortu, doa_catatan, source_page: '/itikaf2.html'
                     };
 
                     // Jalankan keduanya secara paralel!
@@ -1423,7 +1433,7 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
                                 customer_name: nama,
-                                customer_phone: fullWa,
+                                customer_phone: wa,
                                 address: address,
                                 qty: qty,
                                 notes: doa_catatan || ''

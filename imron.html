@@ -1829,6 +1829,13 @@
             renderDonationsTable(rows);
         }
 
+        const fmtWa = n => {
+            let c = String(n || '').replace(/\D/g, '');
+            if (c.startsWith('62')) return '+' + c;
+            if (c.startsWith('0')) return '+62' + c.replace(/^0+/, '');
+            return c ? '+' + c : '—';
+        };
+
         function renderLeadsTable(rows) {
             const tbody = document.getElementById('tbody-leads');
             document.getElementById('row-count-leads').textContent = rows.length ? `(${rows.length} lead)` : '';
@@ -1842,7 +1849,7 @@
                 <td class="row-num">${i + 1}</td>
                 <td>
                     <div style="font-weight:700; color:var(--text-main)">${esc(r.nama)}</div>
-                    <div style="font-size:0.75rem; color: #4ade80; margin-top:2px; font-weight:600">+${esc(r.wa || '')}</div>
+                    <div style="font-size:0.75rem; color: #4ade80; margin-top:2px; font-weight:600">${fmtWa(r.wa)}</div>
                 </td>
                 <td style="color:var(--text-muted); font-size: 0.82rem">${esc(r.kota || '')}<br>${esc(r.kecamatan || '')}</td>
                 <td>
@@ -1868,7 +1875,7 @@
             tbody.innerHTML = rows.map((r, i) => `<tr>
                 <td class="row-num">${i + 1}</td>
                 <td><div style="font-weight:700; color:var(--text-main)">${esc(r.nama)}</div></td>
-                <td><a class="wa-btn" style="margin-top:2px; display:inline-flex" href="https://wa.me/${(r.wa || '').replace(/\D/g, '')}" target="_blank">📱 ${esc(r.wa)}</a></td>
+                <td><a class="wa-btn" style="margin-top:2px; display:inline-flex" href="https://wa.me/${(r.wa || '').replace(/\D/g, '')}" target="_blank">📱 ${fmtWa(r.wa)}</a></td>
                 <td><span class="chip chip-rp" style="font-size:0.82rem">${rp(r.jumlah)}</span></td>
                 <td style="color:var(--text-muted);font-style:italic;max-width:200px;font-size:0.75rem">${esc(r.catatan || '—')}</td>
                 <td style="color:var(--text-muted);font-style:italic;max-width:200px;font-size:0.75rem">${esc(r.doa_catatan || '—')}</td>
